@@ -20,38 +20,40 @@
     <div class="card"><span class="tag">Workflow</span><p>Agent-led, human support</p></div>
     <div class="card"><span class="tag">Oversight</span><p>Human in and on the loop</p></div>
     <div class="card"><span class="tag">Data</span><p>Confidential enterprise financial data</p></div>
-    <div class="card"><span class="tag">Audience of output</span><p>Management, board, regulators</p></div>
+    <div class="card"><span class="tag">Output used by</span><p>Internal and external stakeholders, regulators</p></div>
   </div>
   <p>The actuary asks for a report "as of" a date (for example year-end 2025), points to the relevant data (model point files, economic scenarios) and, if needed, updates the prescribed presentation template, which says what to produce and how to format it. The interaction is deliberately <strong>not open-ended</strong>. Inputs include cash-flow model assumptions (economic and non-economic), scenario files, model outputs, model change documentation and previous reports. The system is for internal reporting and preparation only: it makes no consumer-facing underwriting, pricing, claims or marketing decisions.</p>
 
   <div class="figure wide">
     <div class="arch">
-      <div class="zone"><span class="z-label">User and oversight</span>
-        <div class="box human"><b>Actuary</b>Validates intermediate steps (in the loop), monitors progress and approves the final deck (on the loop)</div>
+      <div class="zone"><span class="z-label">Request and output</span>
+        <div class="box"><b>User action</b>Parametrised tool execution: date, data, template</div>
         <div class="box guard"><b>RBAC</b>Identity and permission check on every request</div>
-        <div class="box guard"><b>Input validation</b>Data schemas, type checks; malformed input rejected</div>
-        <div class="box human"><b>Review and approval</b>Numerical accuracy, actuarial analysis, compliant language, consistency across slides</div>
+        <div class="box guard"><b>Input validation and type safety *</b>Data schemas; malformed input rejected</div>
+        <div class="box guard"><b>Human on the loop</b>Actuary follows completion and approves the final deck</div>
+        <div class="box"><b>Final PowerPoint presentation</b></div>
       </div>
       <div class="zone"><span class="z-label">Agent</span>
-        <div class="box core"><b>AI orchestrator agent</b>Decides which data and tools to use, in which order, and builds the report</div>
-        <div class="box"><b>External LLM API</b>Reasoning and generation</div>
-        <div class="box guard"><b>Third-party controls</b>Vendor due diligence, contracts, version monitoring</div>
-        <div class="box"><b>Memory database</b>Structured outputs, draft narratives, session summaries</div>
-        <div class="box guard"><b>Retention policy and monitoring check</b></div>
-        <div class="box guard"><b>Logging of reasoning (CoT or ReAct), tool calls, outputs</b></div>
-        <div class="box guard"><b>Output guardrails</b>Leakage check, JSON grounding, escalation triggers</div>
+        <div class="box core"><b>Agentic architecture</b>Decides which data and tools to use, in which order, and builds the report</div>
+        <div class="box guard"><b>Human in the loop</b>Actuary validates intermediate steps</div>
+        <div class="box"><b>LLM API</b>Reasoning and generation</div>
+        <div class="box guard"><b>Third-party controls</b></div>
+        <div class="box"><b>Memory database</b></div>
+        <div class="box guard"><b>Filtering control and monitoring check</b>On what enters and stays in memory</div>
+        <div class="box guard"><b>Logging interactions</b>Into log files, themselves under a monitoring check</div>
+        <div class="box guard"><b>Output guardrails *</b>Leakage check, JSON grounding, escalation triggers</div>
       </div>
-      <div class="zone"><span class="z-label">Data and tools</span>
-        <div class="box"><b>Company financial data</b>Financial statements, policy data</div>
-        <div class="box"><b>External economic data</b>Market indicators, economic scenarios</div>
+      <div class="zone"><span class="z-label">Tools and data</span>
+        <div class="box guard"><b>MCP access control</b>Only predefined, validated tools</div>
+        <div class="box"><b>Actuarial model</b>Cash-flow projections (validated separately)</div>
+        <div class="box"><b>Validated tools to build the presentation</b>With the PowerPoint template</div>
+        <div class="box"><b>Extracted data</b></div>
         <div class="box guard"><b>Secure data transfer</b></div>
-        <div class="box guard"><b>MCP layer with access controls</b>Only predefined, validated tools</div>
-        <div class="box"><b>Cash-flow projection model</b>Balance sheet over scenarios (validated separately)</div>
-        <div class="box"><b>Pre-approved presentation templates</b></div>
+        <div class="box"><b>Database</b>Company data (financial, policies) and external economic data</div>
       </div>
     </div>
-    <div class="legend"><span class="lg-core">Agent core</span><span class="lg-plain">Component</span><span class="lg-guard">Safeguard</span><span class="lg-human">Human oversight</span></div>
-    <p class="fig-cap">Reconstructed from the description in §6.1.1.2 and the safeguards discussed in §6.1.2. The report's own diagram is Figure 12.</p>
+    <div class="legend"><span class="lg-core">Agent core</span><span class="lg-plain">Component or data</span><span class="lg-guard">Safeguard</span></div>
+    <p class="fig-cap">Simplified from Figure 12 of the report, where safeguards appear in red. Items marked * are described in the text (§6.1.2.2.2) but not drawn in the figure.</p>
   </div>
 
   <h3>Who is accountable</h3>

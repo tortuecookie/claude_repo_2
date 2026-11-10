@@ -238,9 +238,9 @@
   /* ---------- Exercise: oversight matrix ---------- */
   function initOversight(root) {
     const cases = {
-      R: { x: 50, y: 78, name: "Actuarial reporting", text: "<b>Agent-led, human in/on the loop.</b> Complex, multi-step synthesis of confidential financial data. Outputs feed regulatory and management reports, so actuaries validate intermediate steps and approve the final presentation." },
-      M: { x: 26, y: 48, name: "Marketing chatbot", text: "<b>Agent-led, human out of the loop.</b> Real-time conversation rules out case-by-case review. Stakes are lower than underwriting as long as the system personalises rather than decides, so automated guardrails and monitoring carry the load." },
-      U: { x: 80, y: 66, name: "Underwriting support", text: "<b>Human-led, agent support.</b> Decisions affect access to life cover and are tightly regulated. The agent recommends and explains; the underwriter decides every case." }
+      R: { x: 9, y: 69, name: "Actuarial reporting", text: "<b>Agentic workflow, human in and on the loop.</b> Placed at the lower-risk end, since it makes no decisions about individual customers, but high on complexity: a multi-step synthesis of data, models and narrative. Actuaries validate intermediate steps and approve the final presentation." },
+      M: { x: 9, y: 39, name: "Marketing chatbot", text: "<b>Agentic workflow, human out of the loop.</b> Lower stakes as long as the system personalises rather than decides, and moderate complexity. Real-time conversation rules out case-by-case review, so automated guardrails and monitoring carry the load." },
+      U: { x: 69, y: 62, name: "Underwriting support", text: "<b>Human-led with AI agent support.</b> Higher stakes: decisions affect access to life cover and are tightly regulated. The agent recommends and explains; the underwriter decides every case." }
     };
     const mx = $(".matrix", root), info = $("[data-info]", root);
     Object.entries(cases).forEach(([k, c]) => {
@@ -264,14 +264,19 @@
       const r = +rs.value, c = +cs.value;
       $("#ov-risk-o", root).textContent = labels[r - 1];
       $("#ov-cx-o", root).textContent = labels[c - 1];
-      you.style.left = (r - 1) * 22 + 6 + "%"; you.style.bottom = (c - 1) * 22 + 6 + "%";
+      // Positions on the same 0-100 scale as the zones drawn in the page.
+      const x = [8, 30, 48, 70, 92][r - 1], y = [10, 35, 59, 75, 92][c - 1];
+      you.style.left = x + "%"; you.style.bottom = y + "%";
       let mode, why;
-      if (r === 5) { mode = "Consider a human-only process, or human-led with agent support"; why = "At the highest stakes the report suggests human-only processes can be considered."; }
-      else if (r === 4) { mode = "Human-led with agent support (or agent-led with strict human-in-the-loop sign-off)"; why = "High stakes call for a human decision-maker and explicit approval before consequential actions."; }
-      else if (r === 3) { mode = "Agent-led with human-in-the-loop or human-on-the-loop"; why = "Moderate stakes: humans validate key steps or monitor and sample outputs, with the power to intervene."; }
-      else { mode = "Agent-led; human-on-the-loop or, with strong automated controls, human-out-of-the-loop"; why = "Lower stakes allow more autonomy, but automated guardrails, monitoring and periodic review must compensate."; }
-      const cx = c >= 4 ? " Because the task is complex, add stronger human checkpoints: native LLM and agent capabilities are most reliable over short reasoning steps." : "";
-      out.innerHTML = `<p><b>${mode}.</b></p><p class="small muted">${why}${cx}</p>`;
+      if (x >= 84) { mode = "Human only"; why = "At the highest stakes, the report suggests keeping the process human only."; }
+      else if (x >= 55) {
+        if (y >= 43) { mode = "Human-led with AI agent support"; why = "High stakes keep a human as decision-maker. For a complex task, an agent can retrieve, calculate and draft, as in the underwriting case."; }
+        else { mode = "Human-led with automation support"; why = "High stakes keep a human as decision-maker. For a simpler task, conventional automation can support them."; }
+      } else if (y >= 69) { mode = "Agentic workflow, human in the loop"; why = "Stakes allow an agent to lead, but a complex goal needs explicit human approval at key steps."; }
+      else if (y >= 49) { mode = "Agentic workflow, human on the loop"; why = "The agent runs the workflow; humans monitor, sample outputs and can intervene."; }
+      else if (y >= 21) { mode = "Agentic workflow, human out of the loop"; why = "Lower stakes and moderate complexity: automated guardrails, monitoring and periodic system-level review carry the oversight."; }
+      else { mode = "Traditional automation"; why = "A simple, low-stakes task may not need an agent at all: rules-based automation can be enough."; }
+      out.innerHTML = `<p><b>${mode}.</b></p><p class="small muted">${why}</p>`;
     }
     rs.addEventListener("input", upd); cs.addEventListener("input", upd); upd();
   }

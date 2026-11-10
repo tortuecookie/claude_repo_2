@@ -107,7 +107,7 @@ const QUIZZES = {
       o: ["90 instead of 21", "21 instead of 90", "15 instead of 6", "The same number"],
       a: 1, e: "Without a standard protocol you need M × N = 90 integrations. With MCP each agent and each tool implements the protocol once: M + N = 21. (§5.2.5)" },
     { q: "According to the research the report cites, which architecture suits a strictly sequential task such as planning?",
-      o: ["Centralized multi-agent", "Decentralized multi-agent", "Single agent", "Independent multi-agent with majority voting"],
+      o: ["Centralized multi-agent", "Decentralized multi-agent", "Single agent", "Independent multi-agent with an aggregator"],
       a: 2, e: "For sequential tasks, multi-agent decomposition tends to waste the token budget on coordination, so a single agent is preferred. (§5.2.4.3, Figure 6)" },
     { q: "What is the main risk the report highlights for fine-tuning?",
       o: ["Prompt sensitivity", "Catastrophic forgetting of general capabilities", "Higher latency of retrieval", "It cannot be combined with prompts"],

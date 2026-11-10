@@ -1,0 +1,170 @@
+<section class="page" id="page-m2" aria-labelledby="m2-title" hidden>
+  <div class="mod-head">
+    <h1 id="m2-title">How large language models work</h1>
+    <p class="lede">You don't need to build an LLM to govern one. You do need to know enough about how it produces text to judge where it can be trusted and where it needs checks. This module gives you that technical literacy.</p>
+  </div>
+
+  <div class="objectives">
+    <h2>By the end of this module you can</h2>
+    <ul>
+      <li>Explain tokenisation, embeddings, attention and the transformer in plain words.</li>
+      <li>Tell GPT-style and BERT-style models apart, and describe pre-training and fine-tuning.</li>
+      <li>Describe the output-, model- and input-related limits of LLMs, and the two kinds of hallucination.</li>
+      <li>Explain how temperature, Top-P, Top-K, context window and memory affect reliability.</li>
+    </ul>
+  </div>
+
+  <h2>2.1 From words to numbers</h2>
+  <p>An LLM is a kind of <strong>generative AI</strong>: AI that creates new content (text, images, audio, code) instead of only analysing existing data. LLMs are neural networks, usually transformers, trained on vast datasets with billions of parameters. They grew out of decades of progress in natural language processing.</p>
+  <div class="figure">
+    <div class="flow">
+      <div class="node"><b>1980s</b>Perceptrons: basic neural networks that struggle with sequences.</div>
+      <span class="arrow">→</span>
+      <div class="node"><b>1990s</b>RNNs and LSTMs keep a memory of earlier inputs, but lose long-range information.</div>
+      <span class="arrow">→</span>
+      <div class="node"><b>2017</b>The transformer and its attention mechanism capture long-range context efficiently.</div>
+      <span class="arrow">→</span>
+      <div class="node"><b>2018 onward</b>GPT and BERT, then today's multimodal models.</div>
+    </div>
+    <p class="fig-cap">From sequence modelling, to contextual understanding, to generation, to multimodal reasoning (§5.1.1).</p>
+  </div>
+
+  <h3>Tokens and embeddings</h3>
+  <p>Before a network can read text, two things happen:</p>
+  <ol class="steps">
+    <li><strong>Tokenisation.</strong> The text is cut into tokens: sentences, words or, most often, pieces of words. "Reinsurance" might become "Re", "insur", "ance".</li>
+    <li><strong>Embedding.</strong> Each token becomes a dense vector of numbers. Words with similar meanings get similar vectors. The classic example: the vector for <em>King − Man + Woman</em> lands very close to <em>Queen</em>. Embeddings capture analogies as well as similarity.</li>
+  </ol>
+
+  <h3>Attention and the transformer</h3>
+  <p>The transformer, introduced in 2017, is the foundation of every modern LLM. Its key idea is <strong>attention</strong>: for each token, the model weighs how much every other token in the sequence matters, wherever it sits. That is how it tells "river <em>bank</em>" from "<em>bank</em> loan". <strong>Multi-head attention</strong> runs several attention mechanisms in parallel to learn different kinds of relationships. Transformers also process tokens in parallel, so they train much faster than RNNs.</p>
+
+  <div class="grid g2">
+    <div class="card navy">
+      <span class="tag">Encoder-only</span>
+      <h4>BERT (2018)</h4>
+      <p>Reads the tokens before <em>and</em> after each position, so it sees the whole sentence. It learns by predicting masked (hidden) tokens. Strong at classification and question answering.</p>
+    </div>
+    <div class="card teal">
+      <span class="tag">Decoder-only</span>
+      <h4>GPT (2018 onward)</h4>
+      <p><b>G</b>enerative <b>P</b>re-trained <b>T</b>ransformer. Looks only at preceding tokens and learns to predict the next one. At inference it writes one token at a time, feeding each new token back in. Strong at generation: summaries, drafting, translation.</p>
+    </div>
+  </div>
+
+  <h3>Two phases of training</h3>
+  <div class="grid g2">
+    <div class="card"><h4>Pre-training</h4><p>The model learns general language patterns, grammar and knowledge from a massive corpus (books, articles, websites) with a self-supervised objective such as next-token prediction. It is so costly that new foundation models are released relatively rarely.</p></div>
+    <div class="card"><h4>Fine-tuning</h4><p>The pre-trained model is trained further on a smaller, specialised dataset for a task such as answering questions or summarising. Parameter-efficient methods update only a small subset of weights, so teams without heavy infrastructure can do it. Module 3 covers it in detail.</p></div>
+  </div>
+
+  <h3>Beyond text: multimodal models and OCR</h3>
+  <p>The latest LLMs are <strong>multimodal</strong>. An image is cut into small patches, each turned into an embedding by a vision encoder (typically a Vision Transformer) and projected into the same space as text tokens. Attention then runs over the mixed sequence, so the model can read text from a scanned form and reason about what it means.</p>
+  <div class="callout practice">
+    <span class="c-label">Use the smallest tool that does the job</span>
+    <p>Not every document task needs a general multimodal LLM. Extracting a policyholder's details from an identity card scan is pure text-from-image extraction. A smaller OCR model can do it more cheaply. The report cites <strong>Nougat</strong>, an encoder-decoder model that handles complex documents such as actuarial formulas and tables more precisely and at lower cost than generalist LLMs <span class="ref">§5.1.1.6</span>.</p>
+  </div>
+
+  <h2>2.2 What these models are good at</h2>
+  <p>The report maps capabilities to model types in its Table 3. A condensed version:</p>
+  <div class="tbl-wrap wide">
+    <table>
+      <thead><tr><th>Model type</th><th>Typical strength</th><th>Insurance example</th></tr></thead>
+      <tbody>
+        <tr><td>LLM</td><td>Extract and restructure information from raw text; summarise, classify, compare; generate text</td><td>Draft a summary of a customer's call with a sales representative</td></tr>
+        <tr><td>OCR</td><td>Extract information from unstructured documents (PDFs, images) into standard templates</td><td>Support claims management and fraud detection</td></tr>
+        <tr><td>Multimodal LLM</td><td>Extract and analyse audio and image content alongside text</td><td>Detect visual anomalies or inconsistencies in submitted documents</td></tr>
+        <tr><td>RAG</td><td>Find relevant information across many documents and ground generation in it</td><td>Analyse contract clauses; a chatbot that helps choose a contract</td></tr>
+        <tr><td>Agent</td><td>Gather information from heterogeneous sources and use validated tools through coordinated steps</td><td>Classify a risk profile with submitted documents, a validated ML scoring model and expert rules; automate actuarial reporting</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="tbl-caption">Condensed from Table 3 (§5.1.2).</p>
+
+  <h2>2.3 The limits every reviewer should know</h2>
+  <p>The report sorts limits into three families. Knowing which family a problem belongs to tells you where to look for the fix.</p>
+
+  <div class="tabs">
+    <div class="tab-list">
+      <button type="button">Output: hallucinations</button>
+      <button type="button">Model: opacity</button>
+      <button type="button">Input: sensitivity</button>
+    </div>
+    <div class="tab-panel">
+      <p>An LLM <strong>hallucinates</strong> when it produces information that is false, unverifiable or stated with unwarranted confidence. It predicts the most probable next word: it writes what seems likely, not what is necessarily true.</p>
+      <div class="grid g2">
+        <div class="card amber"><h4>Factual hallucination</h4><p>Contradicts verifiable facts: a wrong date, a quote attributed to the wrong person, a regulation or entity that does not exist.</p></div>
+        <div class="card amber"><h4>Faithfulness hallucination</h4><p>Diverges from the user's input or contradicts itself: ignores an instruction, contradicts the claim file you supplied, or reasons inconsistently.</p></div>
+      </div>
+      <p><strong>Where they come from.</strong> Training data contains errors, biases and gaps. Training rewards always giving an answer, even without enough information. Word-by-word generation favours plausibility over truth. Learning-theory research suggests hallucination may be <em>inevitable</em> when LLMs are used as general problem solvers.</p>
+      <p><strong>How to contain them.</strong> Combine generation with rule-based and data-driven foundations. Retrieval (vector search, graphs, curated reference data) grounds the model in verified information. Deterministic rules and pre-validated ML models handle critical decision steps. In some designs, GenAI is only the interface that interprets queries and formats answers, while structured algorithms make the decision.</p>
+    </div>
+    <div class="tab-panel">
+      <p>Most commercial LLMs are proprietary, and information is hidden at every stage:</p>
+      <ul>
+        <li><strong>Training:</strong> datasets, curation, hyperparameters and filtering are generally not disclosed.</li>
+        <li><strong>Architecture and weights:</strong> code is rarely open source, and <em>closed-weight</em> models keep their learned parameters private. <em>Open-weight</em> models publish them for inspection and reuse.</li>
+        <li><strong>Deployment:</strong> the provider's <em>system prompt</em> (tone, safety rules, style) is hidden from end users.</li>
+      </ul>
+      <p>Even with full access, billions of parameters make meaningful auditing practically infeasible. Hence the "black box" label: inputs and outputs are visible, the reasoning in between is not. The consequences are reduced auditability, harder root-cause analysis and tension with regulatory explainability expectations.</p>
+      <div class="callout key"><span class="c-label">The way out</span><p>These limits apply when models are used "as is". Grounding the model in structured reference data, and having a human validate its assessment against that data, separates what stays a black box from what is traceable. Once a human validates the reasoning and outputs, the decision rationale becomes auditable and transferable to a human decision-maker <span class="ref">§5.1.3.2.2</span>.</p></div>
+    </div>
+    <div class="tab-panel">
+      <p><strong>Prompt sensitivity</strong> is the tendency to answer differently, sometimes very differently, to small changes in wording or structure. It causes three problems:</p>
+      <ol>
+        <li>Evaluation: variable answers make it hard to judge a model's true capability.</li>
+        <li>User experience: people rephrase several times before they get a usable answer.</li>
+        <li>Fairness: phrasing can trigger or amplify biases from the training data, so similar cases may get different outcomes.</li>
+      </ol>
+      <p><strong>Robustness</strong> is the related ability to give consistent, reliable outputs (accurate, factual, safe and fair) when inputs or contexts vary slightly. Prompt sensitivity directly undermines it.</p>
+      <div class="callout example"><span class="c-label">Example</span><p>Two underwriters ask an assistant about the same applicant, one with "Summarise the medical risks" and the other with "Is there anything worrying in this file?". If the substance of the answer changes, the tool is not robust enough for decision support.</p></div>
+    </div>
+  </div>
+
+  <h2>2.4 The dials: temperature, Top-P and Top-K</h2>
+  <p>At each step the model assigns a probability to every candidate next token. Generation parameters decide how adventurous the choice is. They matter for governance because they change variability, reliability and hallucination risk.</p>
+  <ul>
+    <li><strong>Temperature</strong> reshapes the probabilities. Around 0.1 gives predictable, reliable output; around 1.0 gives creative but less reliable output.</li>
+    <li><strong>Top-K</strong> keeps only the K most probable tokens. With K = 50, only the 50 likeliest words compete.</li>
+    <li><strong>Top-P</strong> (nucleus sampling) keeps the smallest set of tokens whose cumulative probability exceeds P. With P = 0.9, the tokens covering 90% of the probability mass.</li>
+  </ul>
+
+  <section class="exercise wide" data-x="sampling">
+    <header><span class="x-tag">Exercise</span><h3>See how the dials change the next word</h3></header>
+    <div class="x-body">
+      <p>The model is completing: <em>"The policyholder reported ___ damage."</em> Move the sliders and watch which words stay eligible (dark bars). Then draw five samples.</p>
+      <div class="form-grid">
+        <div class="slider-row"><label for="smp-t">Temperature <output id="smp-t-o"></output></label><input type="range" id="smp-t" min="0.1" max="2" step="0.05" value="1"></div>
+        <div class="slider-row"><label for="smp-k">Top-K <output id="smp-k-o"></output></label><input type="range" id="smp-k" min="1" max="10" step="1" value="10"></div>
+        <div class="slider-row"><label for="smp-p">Top-P <output id="smp-p-o"></output></label><input type="range" id="smp-p" min="0.1" max="1" step="0.05" value="1"></div>
+      </div>
+      <div class="tokens" aria-live="polite"></div>
+      <div class="btn-row"><button class="btn primary small" type="button" data-sample>Draw 5 samples</button></div>
+      <p class="sample-out"></p>
+      <p class="small muted">Illustrative probabilities, not from a real model. Try temperature 0.1 (almost always "water") and 2.0 with Top-P 1 (even "dragon" becomes possible).</p>
+    </div>
+  </section>
+
+  <h3>Context window and memory</h3>
+  <div class="grid g2">
+    <div class="card"><h4>Context window</h4><p>Each model can take in a limited number of tokens per query. Chat history uses them up, so older parts of a conversation are progressively forgotten. The more data you pack into the instructions, the harder the task becomes. This bites in document-heavy work with long reports or historical datasets.</p></div>
+    <div class="card"><h4>Memory</h4><p><em>Short-term memory</em> is what sits in the context window. <em>Long-term memory</em> stores past interactions in a separate database and retrieves them when needed. For agents, memory is a key design parameter, and also a privacy and security surface (see Module 4).</p></div>
+  </div>
+
+  <div class="callout key">
+    <span class="c-label">Bottom line</span>
+    <p>Taken together, these limits mean AI systems are best used as decision-support tools that give guidance, not definitive answers. Responsible deployment relies on robust validation, clear human oversight and continuous governance <span class="ref">§5.1.4</span>.</p>
+  </div>
+
+  <div class="quiz" data-quiz="m2"></div>
+
+  <div class="takeaways">
+    <h2>Key takeaways</h2>
+    <ul>
+      <li>LLMs turn text into tokens and embeddings, then use attention to predict what comes next.</li>
+      <li>Hallucinations come from how the model works, not only from bad data. Ground the model and verify its output.</li>
+      <li>Opacity is real, but the system around the model can still be made traceable and auditable.</li>
+      <li>Low temperature and tight sampling give stable, reproducible outputs. Record these settings as part of the system's configuration.</li>
+    </ul>
+  </div>
+</section>

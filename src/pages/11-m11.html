@@ -1,0 +1,180 @@
+<section class="page" id="page-m11" aria-labelledby="m11-title" hidden>
+  <div class="mod-head">
+    <h1 id="m11-title">Case 3: Underwriting support agent</h1>
+    <p class="lede">An internal agent helps life underwriters. It reads structured applicant data, queries a scoring model, and recommends acceptance, acceptance under conditions, or decline, with an explanation. The underwriter decides every case. This is the highest-stakes case: health data, access to cover, and strict anti-discrimination rules.</p>
+  </div>
+
+  <div class="objectives">
+    <h2>By the end of this module you can</h2>
+    <ul>
+      <li>Explain why a human-led design is a structural mitigation for output risk.</li>
+      <li>Identify how bias can enter through the scoring model and be amplified by the agent's explanations.</li>
+      <li>Plan bias, hallucination, faithfulness and robustness evaluations for recommendations.</li>
+      <li>Use override patterns and drift monitoring to keep the system honest after launch.</li>
+    </ul>
+  </div>
+
+  <h2>11.1 The system</h2>
+  <div class="grid g4">
+    <div class="card"><span class="tag">Workflow</span><p>Human-led, agent support</p></div>
+    <div class="card"><span class="tag">Oversight</span><p>Human in the loop on every application</p></div>
+    <div class="card"><span class="tag">Data</span><p>Medical, lifestyle, demographic and occupational data</p></div>
+    <div class="card"><span class="tag">Impact</span><p>High: access to life cover and its price</p></div>
+  </div>
+  <p>For each application the agent works through a fixed sequence:</p>
+  <ol class="steps">
+    <li>Retrieve the complete structured applicant data and identify relevant risk factors.</li>
+    <li>Query an existing scoring model (e.g., an ML model) for a risk score.</li>
+    <li>Combine data and score into a recommendation: <strong>acceptance</strong>, <strong>acceptance under conditions</strong> or <strong>decline</strong>, with a structured explanation citing the key risk factors and the statistical evidence from the score.</li>
+    <li>For a decline, also generate visualisations of the risk factors driving the recommendation.</li>
+    <li>The underwriter reviews the recommendation, explanation and underlying data, then makes the decision.</li>
+  </ol>
+  <p>Data covers demographics (name, age, sex, weight and height for BMI), medical history (treatments, surgeries, family history), lifestyle (smoking, alcohol, exercise, risky activities) and occupation. Because the system influences eligibility and pricing and can draft customer communications such as decline letters, it is governed as a <strong>high-stakes, customer-impactful</strong> system even though it is internal.</p>
+
+  <div class="figure wide">
+    <div class="arch">
+      <div class="zone"><span class="z-label">Underwriter</span>
+        <div class="box human"><b>Underwriter</b>Holds full decision authority; can override or escalate at any stage</div>
+        <div class="box guard"><b>RBAC</b>Secured, controlled access</div>
+        <div class="box human"><b>Decision recorded</b>Approve, decline or refer, in the system of record; overrides documented</div>
+      </div>
+      <div class="zone"><span class="z-label">Agent</span>
+        <div class="box core"><b>Underwriting agent</b>Coordinates retrieval, tools and synthesis</div>
+        <div class="box"><b>External LLM API</b></div>
+        <div class="box guard"><b>Third-party controls</b></div>
+        <div class="box guard"><b>Data minimisation at the LLM layer</b>Only what the recommendation needs</div>
+        <div class="box"><b>Memory database</b>Session information</div>
+        <div class="box guard"><b>Monitoring check; context cleared between applicants</b></div>
+        <div class="box guard"><b>LLM-as-a-judge checks</b>Tool use and reasoning consistent with inputs</div>
+      </div>
+      <div class="zone"><span class="z-label">Data and tools via MCP</span>
+        <div class="box guard"><b>Secure data transfer and access controls</b></div>
+        <div class="box"><b>RAG over applicant data and medical records</b></div>
+        <div class="box"><b>Scoring model</b>Risk or acceptance probability; validated separately</div>
+        <div class="box"><b>Interpretability toolbox</b>Factors behind the score</div>
+        <div class="box"><b>Graphic tool</b>Visuals of key risk factors for declines</div>
+      </div>
+    </div>
+    <div class="legend"><span class="lg-core">Agent core</span><span class="lg-plain">Component</span><span class="lg-guard">Safeguard</span><span class="lg-human">Human oversight</span></div>
+    <p class="fig-cap">Reconstructed from §6.3.1 and the safeguards in §6.3.2. The report's own diagram is Figure 14.</p>
+  </div>
+
+  <h2>11.2 The checklist, phase by phase</h2>
+  <div class="tabs wide">
+    <div class="tab-list">
+      <button type="button">Planning</button>
+      <button type="button">Design</button>
+      <button type="button">Development</button>
+      <button type="button">Deployment</button>
+    </div>
+
+    <div class="tab-panel">
+      <p><strong>Expected impact: high.</strong> Wrong or biased outputs could lead to wrongful denial of cover, discriminatory treatment, or acceptance of risks that were not properly assessed, with financial, legal and reputational consequences.</p>
+      <p><strong>Accountability:</strong> underwriting owns the use case; underwriting and data science own the tools, including the scoring model; IT owns infrastructure and security; legal owns legal requirements; risk management covers model risk.</p>
+      <p><strong>Possibly relevant rules,</strong> to assess with counsel: data protection and privacy (personal and health information), sector-specific insurance regulation, consumer protection and anti-discrimination rules for insurance. Given the range of frameworks that may apply, produce all five artifacts: data sheet, fact sheet, model card, risk register and system card.</p>
+      <h4>Preliminary risks</h4>
+      <div class="grid g2">
+        <div class="card red"><span class="tag">Data</span><p>Highly sensitive data (medical history, treatments, habits) flows through the agent, scoring model, LLM API and audit logs. Each is a possible exposure point.</p></div>
+        <div class="card red"><span class="tag">Input</span><p>Prompt sensitivity: the way an underwriter phrases a request must not change the substance of the recommendation or introduce bias.</p></div>
+        <div class="card red"><span class="tag">System</span><p>The usual agent risks (provider dependency, tool misuse, inaccuracy, injection), plus a scoring model trained on historical decisions that may encode past discrimination. The agent may <strong>amplify</strong> it through selective emphasis, for example by always highlighting certain factors for certain profiles.</p></div>
+        <div class="card red"><span class="tag">Output</span><p>Recommendations and explanations must match the score and the data, and must not be unfairly discriminatory.</p></div>
+      </div>
+      <div class="callout key">
+        <span class="c-label">The design itself is a control</span>
+        <p>Because no coverage decision is made without expert validation, the human-led design is a <strong>structural mitigation</strong> for output risk. Around it: pre-validated tools under strict access control, LLM-as-a-judge checks on tool use and reasoning, continuous monitoring with retraining or rule updates when needed, and robust logging for audit and post-hoc explanation.</p>
+      </div>
+    </div>
+
+    <div class="tab-panel">
+      <h4>Safety and security</h4>
+      <ul>
+        <li><strong>Data:</strong> minimisation at the LLM layer, so prompts to the external model carry only what the recommendation and explanation need. Fully clear the agent's context between applications, so nothing from one applicant persists into the next.</li>
+        <li><strong>System:</strong> Case 1's mitigations for agent, memory, provider and access. The scoring model is validated independently before integration, with performance and fairness across protected groups assessed and drift monitoring planned. RBAC enforces access.</li>
+        <li><strong>Output:</strong> underwriter review, plus the bias tests below.</li>
+      </ul>
+      <h4>Interpretability and traceability</h4>
+      <ul>
+        <li>Log per application: applicant data given to the agent, LLM prompt, scoring call and result, reasoning steps, recommendation and explanation, visualisations.</li>
+        <li>Ground every element of every explanation in a data field, the score, or both. This matters doubly here: explanations shape the underwriter's judgment and, for a decline, may inform the applicant.</li>
+        <li>Document known limits: non-deterministic outputs, bias inherited from the scoring model, and <strong>no access to qualitative factors</strong> beyond structured data that an experienced underwriter might weigh.</li>
+        <li>When an applicant challenges a decision, be able to explain which data, which score and which reasoning were used.</li>
+        <li>Brief underwriters on capabilities, limits and known failure modes before use.</li>
+      </ul>
+      <h4>Oversight, accountability and escalation</h4>
+      <p>A qualified underwriter reviews and validates every recommendation before any binding decision. The agent has no authority to accept or decline. The underwriter is accountable for the decision, the system owner for recommendation quality, and the model owner for the scoring model's performance and fairness. Predefined triggers route cases to manual review, for example when the score is anomalous. The system can be suspended at once (biased pattern, scoring failure) and underwriting can fall back to the fully manual process.</p>
+      <h4>Evaluation plan</h4>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Risk</th><th>Evaluation</th></tr></thead>
+          <tbody>
+            <tr><td>Bias and fairness</td><td>Two levels: audit the scoring model for discriminatory bias, then check the agent does not systematically recommend different decisions for different sensitive groups.</td></tr>
+            <tr><td>Hallucination</td><td>Every risk factor cited, every reference to applicant data and every stated probability must be verifiable against the inputs and the score.</td></tr>
+            <tr><td>Faithfulness</td><td>Compare explanations with the actual score and data: does the stated reasoning reflect what drove the recommendation? Check decline visuals are authentic. LLM-as-a-judge flags inconsistencies, such as a high-risk profile despite favourable scores, and reviews step-by-step reasoning. Underwriters review a sample across all recommendation types and profiles against guidelines.</td></tr>
+            <tr><td>Robustness</td><td>Re-run the same profile for stable recommendations, explanations and visuals. Perturb one variable: a minor change should not change the outcome materially, while "non-smoker" to "current smoker" should. Use CoT or ReAct logs to find where divergences start. Test that the underwriter's phrasing does not change the substance.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h4>Data flow</h4>
+      <p>The underwriter manages applicant documents in a dedicated interface. Processing happens in session memory. A minimisation layer extracts only the attributes needed. The orchestrator forwards the minimised set to the model, which returns a score and explanation. The decision engine records the final decision persistently; overrides and notes go to case management. Logs (metadata, not full datasets) go to SIEM, audit or WORM storage; performance and validation metrics to monitoring systems. Provenance is logged for every source and for the scoring model's training data.</p>
+    </div>
+
+    <div class="tab-panel">
+      <ul>
+        <li>Update all five artifacts with development decisions and any new risks.</li>
+        <li><strong>Safety testing</strong>, thorough and documented: secure access to data and tools, RBAC working, and the underwriter able to override or escalate at any stage.</li>
+        <li><strong>Data:</strong> Case 2's data governance approach applied to underwriting. Review how applicant data, medical records and occupational information are collected; document lineage from submission to the agent's structured input; version the scoring model's training data.</li>
+        <li><strong>Two components, two records:</strong> a full-lifecycle model card for the scoring model, and agent documentation covering prompts, tools and output rules.</li>
+        <li><strong>Testing:</strong> run the evaluation plan with auditable records of scope, criteria, thresholds, results, issues and fixes. Deploy only once identified risks are mitigated.</li>
+        <li><strong>Validation:</strong> confirm accuracy, fairness and safety targets and working oversight. The underwriter does a final end-to-end review across representative profiles.</li>
+      </ul>
+    </div>
+
+    <div class="tab-panel">
+      <ul>
+        <li><strong>Integration:</strong> check the full chain (data retrieval, tools, recommendation delivery), confirm minimisation at the LLM layer, and confirm logging captures everything needed for audit.</li>
+        <li><strong>Underwriter readiness:</strong> users know capabilities, limits and failure modes, and when to override, escalate or report.</li>
+        <li><strong>Monitoring:</strong> system health (latency, errors, tool failures, logging completeness) and periodic red teaming.</li>
+        <li><strong>Fallback:</strong> immediate suspension and a return to manual underwriting without disruption.</li>
+        <li><strong>Override analysis:</strong> log underwriter feedback, especially overrides. Systematic disagreement may reveal bias or gaps in the agent's reasoning, and should feed evaluation criteria, thresholds and prompts.</li>
+        <li><strong>Drift:</strong> from a changing applicant population, new underwriting guidelines or a degrading score. Re-run the consistency evaluation periodically; significant drift sends you back through the relevant checklist stages.</li>
+        <li><strong>Bias monitoring</strong> on live data with the design-phase fairness metrics.</li>
+        <li><strong>Retention</strong> rules for applicant data, scores, reasoning logs, explanations, visuals and decisions.</li>
+        <li><strong>Internal reporting</strong> to underwriting management, compliance and risk: override rates, drift indicators, fairness metrics, incidents.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="callout reins">
+    <span class="c-label">Reinsurance lens · trainer's note</span>
+    <p>Reinsurers that provide underwriting manuals, rules engines or automated underwriting support to cedents, or that underwrite large individual life cases on a facultative basis, may recognise this architecture. Override analysis is just as useful there: patterns in where human underwriters disagree with the agent are early evidence of model or data problems.</p>
+  </div>
+
+  <div class="callout practice">
+    <span class="c-label">Compare the three cases</span>
+    <div class="tbl-wrap" style="margin:8px 0 12px">
+      <table>
+        <thead><tr><th></th><th>Reporting</th><th>Marketing chatbot</th><th>Underwriting</th></tr></thead>
+        <tbody>
+          <tr><td>Who leads</td><td>Agent</td><td>Agent</td><td>Human</td></tr>
+          <tr><td>Oversight</td><td>In and on the loop</td><td>Out of the loop</td><td>In the loop, every case</td></tr>
+          <tr><td>Key data risk</td><td>Confidential financials</td><td>Personal data, cross-customer leakage</td><td>Health data</td></tr>
+          <tr><td>Key output risk</td><td>Inaccurate figures or narrative</td><td>Biased, inaccurate or disclosing answers</td><td>Unfair or unfaithful recommendations</td></tr>
+          <tr><td>Signature test</td><td>Two-level JSON grounding, cloze test</td><td>Disclosure scenarios, synthetic profiles</td><td>Faithfulness to score, perturbation</td></tr>
+          <tr><td>Signature feedback</td><td>Actuaries' review comments</td><td>Internal sampling and customer feedback</td><td>Override patterns</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="quiz" data-quiz="m11"></div>
+
+  <div class="takeaways">
+    <h2>Key takeaways</h2>
+    <ul>
+      <li>For high-impact decisions, keep the human as decision-maker. The design itself becomes a control.</li>
+      <li>Bias can come from the scoring model and be amplified by the agent's explanations. Test both levels.</li>
+      <li>Explanations must be faithful to the score and the data, because they shape the underwriter's judgment and may reach the applicant.</li>
+      <li>After launch, override patterns are one of the most informative monitoring signals.</li>
+    </ul>
+  </div>
+</section>

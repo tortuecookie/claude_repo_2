@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>GenAI Governance Academy</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="A self-paced training for (re)insurance professionals on governance and ethics for generative AI, based on the SOA Research Institute report Model Governance/Ethics for GenAI Models (September 2026).">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&display=swap">
+<style>
+{{STYLE}}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <button class="menu-btn" id="menu-btn" type="button" aria-controls="sidebar" aria-expanded="false">
+    <span class="menu-icon" aria-hidden="true"></span><span class="sr">Course menu</span>
+  </button>
+  <a class="brand" href="#home">
+    <span class="brand-mark" aria-hidden="true">G</span>
+    <span class="brand-text">GenAI Governance Academy</span>
+  </a>
+  <div class="top-progress" aria-label="Course progress">
+    <div class="meter"><span id="meter-fill"></span></div>
+    <span class="meter-label" id="meter-label">0 of 11 modules</span>
+  </div>
+</header>
+
+<div class="shell">
+  <nav class="sidebar" id="sidebar" aria-label="Course outline">
+    <div id="nav"></div>
+    <p class="nav-foot">Based on the SOA Research Institute report <em>Model Governance/Ethics for GenAI Models</em> (September 2026). Independent training material, not endorsed by the SOA.</p>
+  </nav>
+  <div class="scrim" id="scrim" hidden></div>
+
+  <main id="main" tabindex="-1">
+{{PAGES}}
+  </main>
+</div>
+
+<script>
+{{SCRIPT}}
+</script>
+</body>
+</html>

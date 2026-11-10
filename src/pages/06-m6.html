@@ -1,0 +1,126 @@
+<section class="page" id="page-m6" aria-labelledby="m6-title" hidden>
+  <div class="mod-head">
+    <h1 id="m6-title">Standards and voluntary frameworks</h1>
+    <p class="lede">Laws say what must be achieved. Standards and voluntary frameworks show how to get there. They create no legal obligation of their own, but they turn high-level principles into concrete, consensus-based practice, and supervisors' expectations closely follow them.</p>
+  </div>
+
+  <div class="objectives">
+    <h2>By the end of this module you can</h2>
+    <ul>
+      <li>Place ISO/IEC 42001, 22989 and 24027, NIST AI RMF and ARIA, the IAA papers, EIOPA's opinion and the OECD principles on one map.</li>
+      <li>Name the four functions of the NIST AI RMF and the five OECD principles.</li>
+      <li>Choose the right reference for a given governance question.</li>
+    </ul>
+  </div>
+
+  <h2>6.1 Three levels of guidance</h2>
+  <div class="grid g3">
+    <div class="card navy">
+      <span class="tag">International, all sectors</span>
+      <h4>ISO/IEC</h4>
+      <ul class="small">
+        <li><strong>ISO/IEC 42001</strong>: certifiable requirements for an AI management system, covering the whole lifecycle from design to monitoring and continuous improvement.</li>
+        <li><strong>ISO/IEC 22989</strong>: common AI terminology.</li>
+        <li><strong>ISO/IEC 24027</strong>: algorithmic bias.</li>
+      </ul>
+      <p class="small muted">A common international language already built into audits and compliance programmes.</p>
+    </div>
+    <div class="card teal">
+      <span class="tag">Operational, cross-industry</span>
+      <h4>NIST</h4>
+      <ul class="small">
+        <li><strong>AI RMF 1.0</strong>: voluntary guidance for trustworthy AI through four functions: <strong>Govern, Map, Measure, Manage</strong>. Its <em>Playbook</em> turns them into concrete actions.</li>
+        <li><strong>ARIA</strong> (Assessing Risks and Impacts of AI): a research programme testing LLM risk in real conditions through model testing, red teaming and field testing. Emerging, not yet applicable.</li>
+      </ul>
+      <p class="small muted">Not mandated, but closely aligned with insurance supervisory expectations.</p>
+    </div>
+    <div class="card violet">
+      <span class="tag">Actuarial and insurance</span>
+      <h4>IAA, EIOPA</h4>
+      <ul class="small">
+        <li><strong>IAA AI Governance Framework (2025)</strong>: organisational responsibilities, with an accountable <strong>Model Owner</strong> and human oversight at every stage.</li>
+        <li><strong>IAA Testing of AI Models (2025)</strong>: technical testing advice, including GenAI challenges.</li>
+        <li><strong>EIOPA Opinion on AI governance and risk management</strong>: prudential expectations for European insurers.</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2>6.2 The actuarial papers in more detail</h2>
+  <div class="tabs">
+    <div class="tab-list">
+      <button type="button">IAA Governance Framework</button>
+      <button type="button">IAA Testing paper</button>
+      <button type="button">EIOPA Opinion</button>
+    </div>
+    <div class="tab-panel">
+      <p>Organises governance around the <strong>Model Owner</strong>, accountable for the whole AI system lifecycle, and insists on human oversight throughout. It then walks the lifecycle:</p>
+      <ul>
+        <li><strong>Design:</strong> bias, fairness and transparency.</li>
+        <li><strong>Data governance:</strong> quality, privacy and security.</li>
+        <li><strong>Implementation:</strong> MLOps and version control.</li>
+        <li><strong>Monitoring:</strong> detecting model or data drift.</li>
+      </ul>
+      <p>It adopts the OECD definition of an AI system and distinguishes the <em>AI model</em> (the inferential core) from the <em>AI system</em> around it.</p>
+    </div>
+    <div class="tab-panel">
+      <p>Gives technical recommendations for testing and validating AI models. It highlights challenges specific to GenAI:</p>
+      <ul>
+        <li>validation is harder because of <strong>hallucinations</strong>;</li>
+        <li>bias can be <strong>inherited and systemic</strong>, coming from training data;</li>
+        <li>thorough testing needs <strong>significant computing resources</strong>.</li>
+      </ul>
+    </div>
+    <div class="tab-panel">
+      <p>Clarifies prudential expectations for insurers' use of AI. It reinforces:</p>
+      <ul>
+        <li>governance and accountability;</li>
+        <li>model risk management;</li>
+        <li>documentation and traceability;</li>
+        <li><strong>proportionality</strong> based on materiality and impact.</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2>6.3 The OECD AI Principles</h2>
+  <p>Adopted in 2019, these are high-level, non-binding <em>policy</em> principles. They are neither technical standards nor legal rules. They set a shared ethical and governance baseline across countries and sectors.</p>
+  <div class="grid g3">
+    <div class="card"><span class="tag">i</span><p>Inclusive growth, sustainable development and well-being</p></div>
+    <div class="card"><span class="tag">ii</span><p>Human-centred values and fairness</p></div>
+    <div class="card"><span class="tag">iii</span><p>Transparency and explainability</p></div>
+    <div class="card"><span class="tag">iv</span><p>Robustness, security and safety</p></div>
+    <div class="card"><span class="tag">v</span><p>Accountability</p></div>
+  </div>
+
+  <h2>6.4 Which framework for which question?</h2>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Your question is about…</th><th>Look first at</th></tr></thead>
+      <tbody>
+        <tr><td>Organisational governance structure</td><td>ISO/IEC 42001 · IAA Governance Framework · NIST AI RMF Playbook (Govern)</td></tr>
+        <tr><td>Bias and fairness</td><td>ISO/IEC 24027 · IAA Testing of AI Models · Alan Turing Institute guide</td></tr>
+        <tr><td>Insurance prudential requirements</td><td>EIOPA Opinion · IAA Testing of AI Models</td></tr>
+        <tr><td>Deployment and productization</td><td>NIST AI RMF Playbook · IAA Testing of AI Models</td></tr>
+        <tr><td>Robustness and security</td><td>NIST ARIA · IAA Testing of AI Models · NIST AI RMF Playbook (Measure)</td></tr>
+        <tr><td>Ethical foundations</td><td>OECD AI Principles · Alan Turing Institute guide</td></tr>
+        <tr><td>Terminology</td><td>ISO/IEC 22989</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="tbl-caption">Table 9, Appendix B of the report.</p>
+
+  <div class="callout key">
+    <span class="c-label">Why this matters for the rest of the course</span>
+    <p>The lifecycle used in Module 7 (planning, design, development, deployment and ongoing monitoring) is not arbitrary. It follows the structure built into both the ISO and NIST frameworks. Work done with the checklist can therefore feed a 42001 management system or a NIST-based programme.</p>
+  </div>
+
+  <div class="quiz" data-quiz="m6"></div>
+
+  <div class="takeaways">
+    <h2>Key takeaways</h2>
+    <ul>
+      <li>Standards create no legal obligation, but they are the practical bridge between regulation, ethics and day-to-day decisions.</li>
+      <li>ISO/IEC 42001 is certifiable. NIST AI RMF organises the work as Govern, Map, Measure, Manage.</li>
+      <li>The IAA and EIOPA bring the frameworks to actuarial and insurance practice: Model Owner accountability, GenAI testing and proportionality.</li>
+    </ul>
+  </div>
+</section>

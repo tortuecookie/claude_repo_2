@@ -1,0 +1,246 @@
+<section class="page" id="page-m3" aria-labelledby="m3-title" hidden>
+  <div class="mod-head">
+    <h1 id="m3-title">Specialising GenAI for actuarial work</h1>
+    <p class="lede">A foundation model knows a lot about language and little about your treaties, your reserving methods or your underwriting guidelines. This module covers the techniques that close that gap, from rewriting a prompt to building a team of agents connected to your systems.</p>
+  </div>
+
+  <div class="objectives">
+    <h2>By the end of this module you can</h2>
+    <ul>
+      <li>Describe the five levels of specialisation, from model selection to operational integration.</li>
+      <li>Write a structured system prompt with COSTAR and explain why JSON input and output help.</li>
+      <li>Compare RAG and fine-tuning, and explain how the choice can change your regulatory role.</li>
+      <li>Describe agent patterns (ReAct, Chain-of-Thought, Plan-and-Execute), multi-agent structures and when each fits.</li>
+      <li>Explain what MCP standardises and why it matters for audit, compared with RPA.</li>
+    </ul>
+  </div>
+
+  <h2>3.1 The specialisation pyramid</h2>
+  <p><strong>AI alignment</strong> means steering a model toward an intended behaviour, ethical principles or preferences. The report arranges the ways to do it as a pyramid. Each level builds on the one below. Human-AI interaction (oversight and feedback) cuts across all of them.</p>
+
+  <div class="figure wide" data-picker>
+    <div class="pyramid" role="group" aria-label="Specialisation levels">
+      <button type="button" class="l5" data-pick="ops">Operation integration<small>MCP, tools, databases, enterprise systems</small></button>
+      <button type="button" class="l4" data-pick="sys">System-level reasoning<small>Agents, planning, multi-step workflows</small></button>
+      <button type="button" class="l3" data-pick="model">Model-level specialisation<small>RAG, fine-tuning, domain adaptation, LoRA</small></button>
+      <button type="button" class="l2" data-pick="prompt">Prompt-level alignment<small>Prompt engineering, examples, instructions</small></button>
+      <button type="button" class="l1" data-pick="sel">Model selection<small>Capabilities</small></button>
+    </div>
+    <div class="side-band">Across all levels: human-AI interactions (oversight and feedback)</div>
+    <div class="detail-panel" data-pick-out aria-live="polite"></div>
+    <template data-for="sel"><p><b>Model selection</b> is the base. Choose the model that fits the use case on size, weight access, ownership and modality. Everything above depends on this choice. <a href="#m3-sel">Read §3.2</a></p></template>
+    <template data-for="prompt"><p><b>Prompt-level alignment</b> is the most accessible entry point: system prompts, structured prompts and examples steer behaviour without changing the model. <a href="#m3-prompt">Read §3.3</a></p></template>
+    <template data-for="model"><p><b>Model-level specialisation</b> grounds the system in insurance data and terminology, either at query time (RAG) or by changing the weights (fine-tuning). <a href="#m3-model">Read §3.4</a></p></template>
+    <template data-for="sys"><p><b>System-level reasoning</b> lets the model reason, plan and act through agents and multi-agent architectures. <a href="#m3-agents">Read §3.5</a></p></template>
+    <template data-for="ops"><p><b>Operation integration</b> connects these capabilities to business processes and tools through standard protocols such as MCP. <a href="#m3-mcp">Read §3.6</a></p></template>
+    <p class="fig-cap">After Figure 3, "From model selection to operation integration" (§5.2). Select a level.</p>
+  </div>
+
+  <h2 id="m3-sel">3.2 Choosing the model</h2>
+  <div class="grid g2">
+    <div class="card"><span class="tag">Size</span><p>From small to very large. Size drives compute cost, especially for fine-tuning and at scale.</p></div>
+    <div class="card"><span class="tag">Weight access</span><p><strong>Open-weight</strong> models can often run locally, be inspected for explainability and bias audits, and be fine-tuned. <strong>Closed-weight</strong> models are reached through an API. Closed models have historically led on general knowledge, but the gap keeps narrowing.</p></div>
+    <div class="card"><span class="tag">Ownership</span><p>Training a foundation model is extremely expensive, so most state-of-the-art LLMs are proprietary. Insurers typically use <strong>third-party models</strong> and align them to their use cases.</p></div>
+    <div class="card"><span class="tag">Modality</span><p>Language-only or multimodal. Claims work with photographs or scanned documents may need multimodal capabilities.</p></div>
+  </div>
+  <p>Public leaderboards such as the Open LLM Leaderboard and Stanford HELM compare models across tasks, and domain-specific leaderboards are emerging. These choices also decide which explainability, bias-testing and content-safety methods you can use later. The SOA report <em>Operationalizing LLMs: A Guide for Actuaries</em> (2025) goes deeper into model and provider selection.</p>
+
+  <h2 id="m3-prompt">3.3 Prompt-level alignment</h2>
+  <p>Shaping behaviour through the prompt is called <strong>in-context learning</strong>: you adapt the model to a task by what you put in front of it, with no costly retraining.</p>
+  <div class="grid g2">
+    <div class="card navy"><h4>System prompt</h4><p>Set by the developer, applied to every request, usually invisible to users. It fixes context, rules, objectives, tone and constraints.</p></div>
+    <div class="card"><h4>User prompt</h4><p>The specific request a person types. It triggers the answer within the frame the system prompt sets.</p></div>
+  </div>
+  <p><strong>Prompt engineering</strong> is the systematic work of writing, testing and refining these inputs. It is a way to "program" an LLM: enforce rules, automate steps, customise outputs. <em>Prompt patterns</em> document reusable solutions to common problems, and dedicated platforms let you register and version prompts.</p>
+
+  <h3>The COSTAR structure</h3>
+  <p>COSTAR is a checklist for structuring a prompt: <strong>C</strong>ontext, <strong>O</strong>bjective, <strong>S</strong>tyle, <strong>T</strong>one, <strong>A</strong>udience, <strong>R</strong>esponse format. The authors mostly use it for system prompts, where its structure pays off most.</p>
+
+  <section class="exercise wide" data-x="costar">
+    <header><span class="x-tag">Exercise</span><h3>Build a COSTAR system prompt</h3></header>
+    <div class="x-body">
+      <p>The fields are pre-filled with the report's water-damage claim example. Adapt them to a task of your own, such as summarising a cedent's loss bordereau or drafting a reserving memo, and copy the result.</p>
+      <div class="form-grid">
+        <div class="field full"><label for="cs-context">Context <small>what is the situation?</small></label><textarea id="cs-context">A customer has submitted a claim for water damage to their property following a recent storm. The claim includes details about the extent of the damage, photographs, and an estimate for repairs. The insurance company needs to assess the claim to determine eligibility for coverage and the appropriate payout amount.</textarea></div>
+        <div class="field full"><label for="cs-objective">Objective <small>what is the task?</small></label><textarea id="cs-objective">Generate a clear, concise summary of the claim, including the cause of damage, estimated costs, and a recommendation for approval or further investigation.</textarea></div>
+        <div class="field"><label for="cs-style">Style</label><input type="text" id="cs-style" value="Professional, objective."></div>
+        <div class="field"><label for="cs-tone">Tone</label><input type="text" id="cs-tone" value="Formal and reassuring, reflecting the seriousness of the situation."></div>
+        <div class="field"><label for="cs-audience">Audience</label><input type="text" id="cs-audience" value="Insurance claims adjuster with moderate experience in property claims."></div>
+        <div class="field"><label for="cs-response">Response format</label><input type="text" id="cs-response" value="Structured report with sections: Claim Summary, Damage Assessment, Cost Evaluation, Policy Coverage Check, Recommendation."></div>
+      </div>
+      <pre class="out" aria-live="polite"></pre>
+      <div class="btn-row"><button class="btn small" type="button" data-copy>Copy prompt</button></div>
+    </div>
+  </section>
+
+  <h3>Examples and structure</h3>
+  <ul>
+    <li><strong>Zero-shot</strong> prompts give no example, <strong>one-shot</strong> prompts give one, <strong>few-shot</strong> prompts give several. Examples show the model exactly what a good answer looks like.</li>
+    <li><strong>Structured output.</strong> Ask for JSON, with labelled key-value pairs such as <code>"claim_amount": 750, "recommendation": "approved"</code>. Each field can be checked against the source, which makes hallucinations easier to spot, and downstream systems can read it directly.</li>
+    <li><strong>Structured input.</strong> Feeding the model well-designed JSON, built with domain experts, leaves less room for misreading and so reduces hallucinations. TOML is an alternative when data volume matters.</li>
+  </ul>
+  <div class="callout practice">
+    <span class="c-label">In practice</span>
+    <p>Design the JSON fields with the people who own the business concepts (actuaries, underwriters, claims experts), so that categories and granularity match how the business actually works. Module 9 shows how this structure supports a two-level hallucination check.</p>
+  </div>
+
+  <h2 id="m3-model">3.4 Model-level specialisation: RAG or fine-tuning</h2>
+  <p>When prompting is not enough to reach the accuracy, consistency or domain specificity you need, you can bring insurance knowledge closer to the model. Useful sources include policy wordings and clauses, claims records and loss histories, underwriting guidelines and risk appetite, regulatory texts, internal procedures, and customer interaction logs. The data's nature and sensitivity, and the use case, drive the choice of technique.</p>
+
+  <h3>Retrieval-augmented generation (RAG)</h3>
+  <p>RAG grounds answers in documents retrieved at query time, without touching the model's parameters. It fixes a basic limit of standalone LLMs: they cannot see recent or proprietary information that was not in their training data.</p>
+  <div class="figure wide">
+    <div class="flow">
+      <div class="node"><b>Knowledge base</b>Reference documents (policies, claims data, regulation) split into chunks and stored as embeddings.</div>
+      <span class="arrow">→</span>
+      <div class="node"><b>Retriever</b>Embeds the query, scores similarity with each chunk, keeps the best (optionally re-ranked).</div>
+      <span class="arrow">→</span>
+      <div class="node"><b>Integration layer</b>Injects the selected chunks into the prompt with an instruction to rely on them.</div>
+      <span class="arrow">→</span>
+      <div class="node"><b>Generator</b>The LLM writes the answer, which can be traced back to its sources.</div>
+    </div>
+    <p class="fig-cap">The four components of a RAG system (§5.2.3.2, App. C.1.1).</p>
+  </div>
+  <p>Because each answer links back to its source documents, RAG suits insurance tasks where accuracy and traceability matter.</p>
+
+  <h3>Fine-tuning</h3>
+  <p>Fine-tuning trains a pre-trained model further on a smaller, task- or domain-specific dataset, and so <strong>permanently changes its weights</strong>. It starts from what the model already knows, so it is far cheaper than pre-training.</p>
+  <div class="grid g3">
+    <div class="card"><h4>Supervised fine-tuning</h4><p>Train on question-answer pairs labelled by experts, such as actuarial questions with validated answers. <em>Self-instruct</em> generates the dataset with a well-calibrated LLM to save annotation cost.</p></div>
+    <div class="card"><h4>RLHF</h4><p>Humans rank model outputs on usefulness, safety or compliance. A reward model learns from the rankings, and the LLM is tuned (e.g., with PPO) toward higher-reward answers. Users see more consistent, guideline-compliant behaviour.</p></div>
+    <div class="card"><h4>LoRA (PEFT)</h4><p>Freezes the original weights and trains small low-rank matrices, typically under 1% of parameters. Memory and compute drop sharply.</p></div>
+  </div>
+  <div class="callout watch">
+    <span class="c-label">Watch out</span>
+    <p>Fine-tuning is costly and complex compared with RAG, and it carries a specific risk: <strong>catastrophic forgetting</strong>, where the model loses some general capabilities after its weights are adjusted.</p>
+  </div>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Technique</th><th>Changes the model?</th><th>When knowledge is added</th><th>Typical use</th></tr></thead>
+      <tbody>
+        <tr><td>Prompt engineering</td><td>No</td><td>In the instructions, per request</td><td>Format, tone, rules, simple domain steering</td></tr>
+        <tr><td>RAG</td><td>No</td><td>At query time, from a knowledge base</td><td>Up-to-date or proprietary facts with source traceability</td></tr>
+        <tr><td>Fine-tuning</td><td>Yes, the weights</td><td>Before deployment, through training</td><td>Domain language, interaction style, behaviour that prompts cannot reach</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout key">
+    <span class="c-label">Why this choice matters for compliance</span>
+    <p>In regimes that distinguish <em>providers</em> from <em>deployers</em>, such as the EU AI Act, your technique can change your role. If you materially modify a foundation model (for example by fine-tuning its parameters) and distribute the result, you are likely the <strong>provider</strong>, with broader obligations. If you only use prompting or RAG to guide tasks and ground outputs, you typically remain a <strong>deployer</strong>. Between these extremes, obligations depend on the degree of modification <span class="ref">§4.2</span>.</p>
+  </div>
+
+  <h2 id="m3-agents">3.5 System-level reasoning: agents</h2>
+  <p>An <strong>AI agent</strong> uses GenAI to pursue a goal on a user's behalf. Unlike a single model call, it can reason, plan, keep context, make decisions and adapt. Crucially, it decides on its own when and whether to call external tools. Agents inherit multimodal abilities from their foundation model and can collaborate with other agents.</p>
+  <div class="figure wide">
+    <div class="arch" style="grid-template-columns: repeat(3, minmax(0, 1fr));">
+      <div class="zone"><span class="z-label">Agent layers</span>
+        <div class="box core"><b>Orchestration</b>Profile, goals and instructions</div>
+        <div class="box core"><b>Memory</b>Short-term (working) and long-term (across sessions)</div>
+        <div class="box core"><b>Reasoning and planning</b>Question decomposition and reflection</div>
+      </div>
+      <div class="zone"><span class="z-label">Engine</span>
+        <div class="box"><b>Generative AI model</b>Language understanding and generation</div>
+      </div>
+      <div class="zone"><span class="z-label">Tools</span>
+        <div class="box"><b>APIs</b></div><div class="box"><b>Databases</b></div><div class="box"><b>Functions</b></div><div class="box"><b>Other agents</b></div>
+      </div>
+    </div>
+    <p class="fig-cap">After Figure 4, diagram of an AI agent (Google Generative AI glossary, cited in §5.2.4).</p>
+  </div>
+
+  <h3>How a single agent thinks</h3>
+  <div class="grid g2">
+    <div class="card navy"><h4>ReAct</h4><p>A loop of <strong>Reason</strong> (state the next step), <strong>Act</strong> (call a tool), <strong>Observe</strong> (read the result), repeated until the agent gives its final answer.</p></div>
+    <div class="card navy"><h4>Chain-of-Thought</h4><p>A prompting technique that asks for explicit intermediate reasoning steps before the answer. It also makes the reasoning easier to inspect.</p></div>
+    <div class="card navy"><h4>Plan-and-Execute</h4><p>The agent breaks the request into tasks, runs them one at a time, and revises the plan as it goes.</p></div>
+    <div class="card navy"><h4>Reflexion, Tree of Thought</h4><p>Other structures that shape reasoning, for example through self-critique or exploring several branches.</p></div>
+  </div>
+
+  <h3>Teams of agents</h3>
+  <p>A <strong>multi-agent system (MAS)</strong> lets specialised agents work together on complex tasks that need parallel work or several kinds of expertise. It costs more tokens and time than a single agent.</p>
+  <div class="grid g4">
+    <div class="card"><span class="tag">Independent</span><p>Agents work in parallel without talking; an aggregator combines their outputs. Maximum parallelism, but no internal error correction.</p></div>
+    <div class="card"><span class="tag">Centralised</span><p>An orchestrator assigns tasks, collects answers, may reassign, and consolidates the result.</p></div>
+    <div class="card"><span class="tag">Decentralised</span><p>No orchestrator: agents collaborate directly, peer to peer.</p></div>
+    <div class="card"><span class="tag">Hybrid</span><p>An orchestrator coordinates, but agents can also hand tasks to one another.</p></div>
+  </div>
+
+  <p>More agents is not automatically better. With the same token budget, prompts and tools, research cited by the report (Kim et al., 2025) found three effects:</p>
+  <ul>
+    <li><strong>Capacity saturation:</strong> once a single agent achieves 45% of a task, adding agents costs more in coordination than it gains.</li>
+    <li><strong>Tools versus coordination:</strong> with many complex tools, splitting the token budget can leave each agent too little to use them well.</li>
+    <li><strong>Error amplification:</strong> a single agent can amplify its own errors, while a central orchestrator can catch and fix them.</li>
+  </ul>
+
+  <section class="exercise" data-x="mas">
+    <header><span class="x-tag">Exercise</span><h3>Single agent or a team?</h3></header>
+    <div class="x-body">
+      <p>Think of a task, such as reconciling three valuation runs or researching a new peril, and answer the questions from Figure 6 of the report.</p>
+      <div class="detail-panel" data-mas aria-live="polite"></div>
+    </div>
+  </section>
+
+  <div class="callout example">
+    <span class="c-label">Agents in actuarial work today</span>
+    <p>Agents can check the modelling and cash-flow projection logic in actuarial Excel files and produce validation reports much faster than manual review. They can document models and processes. In advanced setups they call <em>pre-validated</em> functions (cash-flow runs, stress scenarios) and write up the results in a narrative that follows actuarial standards. Experienced actuaries still need to review the outputs, because undetected calculation errors can be costly <span class="ref">§5.2.4.4</span>.</p>
+  </div>
+
+  <h2 id="m3-mcp">3.6 Operation integration: MCP</h2>
+  <p>On its own, an agent cannot reach a database, retrieve a document, run a calculation or touch an enterprise system. It needs a standard, secure way to call tools.</p>
+  <p>The <strong>Model Context Protocol (MCP)</strong>, introduced by Anthropic in 2024, is an open protocol for exactly that. It uses a client-host-server design: the <em>host</em> is the chatbot or agent, the <em>client</em> manages the connection, and <em>servers</em> expose tools, resources and prompts through a standard API. The report compares it to a universal USB-C port.</p>
+
+  <section class="exercise" data-x="mcp">
+    <header><span class="x-tag">Exercise</span><h3>Count the integrations</h3></header>
+    <div class="x-body">
+      <p>Without a standard, every agent needs its own connector to every tool. With MCP, each agent and each tool implements the protocol once.</p>
+      <div class="form-grid">
+        <div class="slider-row"><label for="mcp-a">Agents (M) <output id="mcp-a-o"></output></label><input type="range" id="mcp-a" min="1" max="20" value="5"></div>
+        <div class="slider-row"><label for="mcp-t">Tools (N) <output id="mcp-t-o"></output></label><input type="range" id="mcp-t" min="1" max="40" value="12"></div>
+      </div>
+      <div class="grid g3" style="margin-bottom:0">
+        <div class="card"><span class="tag">Point to point: M × N</span><span class="kpi" data-mxn></span></div>
+        <div class="card"><span class="tag">With MCP: M + N</span><span class="kpi" data-mpn></span></div>
+        <div class="card"><span class="tag">Fewer integrations</span><span class="kpi" data-saving></span></div>
+      </div>
+    </div>
+  </section>
+
+  <p>MCP also makes it easier to assemble new use cases by reusing reference data and chaining existing tools. Some emerging platforms instead let the LLM write and run its own integration code at runtime. That is more flexible, but tool use becomes harder to audit, sandbox and control. For a regulated industry, the report considers MCP's consistent, traceable and permissioned pathway preferable.</p>
+
+  <h3>MCP-enabled agents versus RPA</h3>
+  <p>Robotic process automation mimics clicks and keystrokes along fixed scripts. It works for stable, rule-based processes but breaks on unstructured inputs and exceptions. The report compares the two on an end-to-end actuarial production chain:</p>
+  <div class="tbl-wrap wide">
+    <table>
+      <thead><tr><th>Step</th><th>Traditional RPA</th><th>MCP-enabled agent</th></tr></thead>
+      <tbody>
+        <tr><td>Data</td><td>Extracts from predefined sources; actuaries handle data-quality exceptions</td><td>Extracts from multiple sources, runs quality checks, applies predefined fixes, flags only critical exceptions</td></tr>
+        <tr><td>Model runs</td><td>Runs cash-flow models with known parameters; humans check the runs</td><td>Adjusts parameters to data or prior results, monitors execution, troubleshoots common errors</td></tr>
+        <tr><td>Consolidation</td><td>Collects results; actuaries do the controls</td><td>Runs automated control checks, reconciles models, writes control reports with variance explanations</td></tr>
+        <tr><td>Reporting</td><td>Fills a template with figures and basic commentary from simple decision trees</td><td>Drafts commentary against trends and business rules, highlights material changes, prepares analysis for actuarial review</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>The agent adapts to new data structures, model configurations or regulatory requirements through updated instructions rather than reconfiguration. RPA tends to automate existing processes, inefficiencies included. Actuarial oversight stays in place for judgment-critical decisions.</p>
+
+  <h2>3.7 The human side: oversight and feedback</h2>
+  <p>Human-AI interaction has two dimensions: the level of oversight during operation (in, on or out of the loop, as in Module 1) and the <strong>feedback</strong> used to improve the system over time.</p>
+  <div class="grid g2">
+    <div class="card teal"><h4>Explicit feedback</h4><p>Collected on purpose, for example by asking users to rate the relevance of an answer.</p></div>
+    <div class="card teal"><h4>Implicit feedback</h4><p>Captured during normal use: time to first token (TTFT), response time, whether the user copies the answer, rephrases the question or asks a follow-up. It needs no extra effort, so there is much more of it.</p></div>
+  </div>
+
+  <div class="quiz" data-quiz="m3"></div>
+
+  <div class="takeaways">
+    <h2>Key takeaways</h2>
+    <ul>
+      <li>Specialise in layers: pick the model, then prompts, then RAG or fine-tuning, then agents and integration.</li>
+      <li>Structured prompts (COSTAR) and JSON inputs and outputs make behaviour more consistent and outputs easier to verify.</li>
+      <li>RAG keeps the model unchanged and traceable. Fine-tuning changes the weights, and can make you a provider.</li>
+      <li>Pick the agent architecture for the task: a single agent for sequential work, centralised teams for decomposable work.</li>
+      <li>MCP gives agents a standard, auditable, permissioned path to tools.</li>
+    </ul>
+  </div>
+</section>

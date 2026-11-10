@@ -1,0 +1,178 @@
+<section class="page" id="page-m1" aria-labelledby="m1-title" hidden>
+  <div class="mod-head">
+    <h1 id="m1-title">GenAI in insurance: what changes</h1>
+    <p class="lede">Generative AI touches almost every link of the insurance value chain. It also changes who does the work, who checks it and who answers for it. This module sets the scene for the rest of the course.</p>
+  </div>
+
+  <div class="objectives">
+    <h2>By the end of this module you can</h2>
+    <ul>
+      <li>Name typical GenAI use cases in underwriting, pricing, reserving, claims, products, marketing and support functions.</li>
+      <li>Explain the five challenges that make GenAI governance different from traditional model governance.</li>
+      <li>Distinguish human-led from agent-led workflows, and the in-, on- and out-of-the-loop oversight models.</li>
+      <li>Place a use case on the human-AI interaction matrix and justify the level of oversight.</li>
+    </ul>
+  </div>
+
+  <h2>1.1 Where GenAI shows up</h2>
+  <p>The report maps use cases into three families: core actuarial work, insurance-specific operations, and support functions. Early adopters report lower operating costs, better customer satisfaction, faster claims settlement and more accurate risk selection. The same use cases also carry new technical, ethical and regulatory risks.</p>
+
+  <div class="tabs wide">
+    <div class="tab-list">
+      <button type="button">Actuarial</button>
+      <button type="button">Insurance-specific</button>
+      <button type="button">Other functions</button>
+    </div>
+    <div class="tab-panel">
+      <div class="grid g2">
+        <div class="card navy"><h4>Underwriting</h4><ul><li>Extract information from application documents (medical records, financial documents)</li><li>Classify applicants' risk profiles (individual risk scoring)</li></ul></div>
+        <div class="card navy"><h4>Pricing</h4><ul><li>Structure the data used in the pricing process</li><li>Use GenAI as a pricing system</li></ul></div>
+        <div class="card navy"><h4>Valuation and reporting</h4><ul><li>Assist actuarial valuation model development</li><li>Automate actuarial and financial reporting</li></ul></div>
+        <div class="card navy"><h4>Risk modelling</h4><ul><li>Help design, run and document risk models</li><li>Analyse risk exposure and stress-test scenarios</li></ul></div>
+      </div>
+    </div>
+    <div class="tab-panel">
+      <div class="grid g2">
+        <div class="card teal"><h4>Claims management</h4><ul><li>Support claim handlers, for example by extracting information from documents</li><li>Support fraud investigation: fraud scores from submitted documents, detection of fake AI-generated images</li><li>Support customers: triage of requests, customer-facing chatbots</li></ul></div>
+        <div class="card teal"><h4>Insurance products</h4><ul><li>Tailor products to an applicant's risk profile and preferences</li><li>Analyse and draft contract clauses</li></ul></div>
+      </div>
+    </div>
+    <div class="tab-panel">
+      <div class="grid g3">
+        <div class="card amber"><h4>Marketing and customer service</h4><ul><li>Customer value scores for targeted campaigns</li><li>Customer-facing chatbots (Q&amp;A, contract selection)</li><li>Real-time assistant for service representatives</li></ul></div>
+        <div class="card amber"><h4>Human resources</h4><ul><li>Resume screening and shortlisting</li><li>Drafting performance reviews, supporting compensation decisions</li></ul></div>
+        <div class="card amber"><h4>Assistance and efficiency</h4><ul><li>Faster coding and validation</li><li>Daily tasks: time management, written content</li></ul></div>
+      </div>
+    </div>
+  </div>
+  <p class="tbl-caption">After Table 1 of the report (§1).</p>
+
+  <p>Across all of them, the report describes GenAI as a <strong>cognitive support layer</strong>. It turns unstructured information into structured, usable insight and augments expert judgment inside existing workflows. Its capabilities fall into three groups: information extraction and structuring, decision support and analytical augmentation, and content generation and interaction <span class="ref">§5.1.2</span>.</p>
+
+  <div class="callout reins">
+    <span class="c-label">Reinsurance lens · trainer's note</span>
+    <p>The same capabilities appear on the reinsurance side: extracting exposure and loss data from cedent submissions, comparing treaty wordings and clauses, drafting technical accounting or Solvency II reporting commentary, and supporting facultative underwriting of individual life or health risks. Reinsurers also meet GenAI indirectly, inside the underwriting and claims processes of the business they accept.</p>
+  </div>
+
+  <p>Two technologies sit at the heart of this shift. <strong>Large language models (LLMs)</strong> understand and generate language at scale, and their capabilities have grown much faster than earlier technologies. The report cites METR's measurements of the length of software tasks that frontier models can complete, which has risen steeply from one model generation to the next <span class="ref">Figure 1</span>. <strong>AI agents</strong> go further: they perceive their environment, decide and act to reach a goal. An agent might gather policy information, assess whether cover applies, draft a letter and escalate edge cases to a human expert.</p>
+
+  <h2>1.2 Five challenges that change governance</h2>
+  <p>The executive summary names five contextual challenges. Together they explain why traditional model governance needs to be extended for GenAI.</p>
+  <div class="stack">
+    <details class="acc" open><summary>1. Professional roles are shifting</summary><div class="acc-body">
+      <p>Actuaries move from producing analyses to supervising, validating and governing AI-enabled workflows. The report asks how professional responsibilities should be redefined, and which ethical principles should govern the delegation of judgment to agents. Consequential decisions are a particular concern, for example adverse underwriting actions such as a higher premium, exclusions or limitations.</p>
+    </div></details>
+    <details class="acc"><summary>2. Opacity undermines trust and explainability</summary><div class="acc-body">
+      <p>Frontier models have hundreds of billions of parameters. GPT-4 is estimated, unofficially, at about 1.8 trillion. Their reasoning cannot be traced the way assumptions and formulas in an actuarial model can. Yet the Actuarial Standards of Practice and regulators expect practitioners to explain methods, justify assumptions and communicate findings to boards, regulators and policyholders.</p>
+    </div></details>
+    <details class="acc"><summary>3. Validation must cover language and images</summary><div class="acc-body">
+      <p>Back-testing, residual analysis and benchmarking work well for numbers. What does "accurate" mean for a policy summary or an explanation of an underwriting decision? A text can be factually right but misleading in tone, or complete but badly organised. Training/test splits, overfitting and performance metrics still apply, but actuaries need new skills: evaluating language outputs, prompt engineering, semantic similarity and hallucination detection.</p>
+    </div></details>
+    <details class="acc"><summary>4. New safety and security risks</summary><div class="acc-body">
+      <p>Familiar infrastructure controls remain essential, but agents widen the attack surface: an agent connected to policy systems, customer databases and external APIs could leak data or execute unauthorised transactions. GenAI adds its own threats: prompt injection, data poisoning, hallucinations, adversarial examples, jailbreaking and bias amplification. Module 4 covers each one.</p>
+    </div></details>
+    <details class="acc"><summary>5. Production needs continuous monitoring</summary><div class="acc-body">
+      <p>Moving from pilot to production needs version control, testing frameworks, deployment pipelines and integration with actuarial systems. Performance can drift as language, claim types and customer behaviour change. Monitoring should track hallucination rates, bias metrics and user satisfaction, not only processing time and error rates. A common pattern pairs traditional actuarial or ML models, validated separately, with a GenAI layer that orchestrates them and assists the expert.</p>
+    </div></details>
+  </div>
+
+  <div class="callout watch">
+    <span class="c-label">Real incidents the report cites</span>
+    <ul>
+      <li><strong>Data poisoning:</strong> a 2025 <em>Nature Medicine</em> study found that replacing 0.001% of training tokens with medical misinformation was enough to make healthcare LLMs produce harmful clinical outputs.</li>
+      <li><strong>Litigation:</strong> in <em>Estate of Gene B. Lokken v. UnitedHealth Group</em>, plaintiffs allege an algorithm wrongly denied post-acute care to Medicare Advantage members. A federal court let the class action proceed in February 2025.</li>
+      <li><strong>Manipulated images:</strong> claims involving AI-manipulated vehicle images tripled year-on-year at major UK insurers.</li>
+      <li><strong>Jailbreak:</strong> in 2024 a user manipulated a dealership's chatbot into agreeing to sell a $76,000 vehicle for one dollar.</li>
+      <li><strong>Bias:</strong> a widely used US healthcare algorithm used past costs as a proxy for health needs, and cut the number of Black patients flagged for extra care by more than half.</li>
+    </ul>
+  </div>
+
+  <h2>1.3 Who leads: the human or the agent?</h2>
+  <p>The report classifies actuarial GenAI use cases by <em>locus of control</em>. This distinction drives most governance choices later in the course.</p>
+  <div class="grid g2">
+    <div class="card teal">
+      <span class="tag">Human-led, agent support</span>
+      <h4>The augmented actuary</h4>
+      <p>The actuary remains the primary decision-maker. Agents retrieve information, run calculations, draft preliminary analyses or suggest approaches. The actuary directs the workflow, interprets outputs and bears ultimate responsibility for conclusions.</p>
+      <p class="small muted">Suits complex, highly regulated tasks such as underwriting decisions.</p>
+    </div>
+    <div class="card navy">
+      <span class="tag">Agent-led, human support</span>
+      <h4>Process redesign</h4>
+      <p>Agents execute workflows, make routine decisions and produce outputs. Humans oversee, handle exceptions and intervene when needed. The actuary's role shifts from execution to supervision and quality assurance.</p>
+      <p class="small muted">Can apply to lower-risk tasks such as fraud detection support in claims.</p>
+    </div>
+  </div>
+
+  <p>Within agent-led workflows, oversight itself comes in three strengths:</p>
+  <div class="figure wide">
+    <div class="flow">
+      <div class="node human"><b>Human-in-the-loop</b>The agent proposes, but cannot finalise a consequential action or output without explicit human approval at each key decision point.</div>
+      <div class="node"><b>Human-on-the-loop</b>The agent runs complete workflows. Humans monitor performance, review samples and can override or halt it when issues appear.</div>
+      <div class="node"><b>Human-out-of-the-loop</b>The agent works autonomously within defined parameters. Humans set it up, review at system level, monitor and govern, but do not oversee individual cases.</div>
+    </div>
+    <p class="fig-cap">Decreasing case-by-case human involvement from left to right (§1.1, §5.2.6). These modes apply to any GenAI application, not only agents.</p>
+  </div>
+
+  <h2>1.4 Matching oversight to stakes and complexity</h2>
+  <p>The report plots use cases on two axes. The <strong>horizontal axis</strong> carries risk, ethical and governance stakes: the higher the stakes, the more oversight is recommended, up to human-only processes at the extreme. The <strong>vertical axis</strong> carries the complexity of the goal: complex tasks need more sophisticated reasoning, and also stronger human checkpoints, because LLMs and agents are most reliable over short reasoning steps.</p>
+
+  <section class="exercise wide" data-x="oversight">
+    <header><span class="x-tag">Exercise</span><h3>Place a use case on the interaction matrix</h3></header>
+    <div class="x-body">
+      <p>Click a lettered dot to see how the report positions its three case studies. Then use the sliders to describe a use case from your own work (the purple star) and read the suggested oversight model.</p>
+      <div class="matrix-wrap">
+        <div>
+          <div class="matrix" aria-label="Interaction matrix: risk on the horizontal axis, complexity on the vertical axis">
+            <div class="band b1">agent-led,<br>light oversight</div>
+            <div class="band b2">agent-led,<br>in/on the loop</div>
+            <div class="band b3">human-led,<br>agent support</div>
+            <div class="band b4">human only</div>
+            <div class="axis-x">Risk, ethical and governance stakes →</div>
+            <div class="axis-y">Complexity of the goal and tasks →</div>
+          </div>
+          <p class="fig-cap">Schematic after Figures 2, 7 and 11 (adapted by the report from Martin et al., 2025). Positions are indicative. R = actuarial reporting, M = marketing chatbot, U = underwriting support.</p>
+        </div>
+        <div>
+          <div class="detail-panel" data-info><p class="muted">Select R, M or U on the matrix.</p></div>
+          <h4>Your use case</h4>
+          <div class="slider-row"><label for="ov-risk">Stakes <output id="ov-risk-o"></output></label><input type="range" id="ov-risk" min="1" max="5" step="1" value="3"></div>
+          <div class="slider-row"><label for="ov-cx">Complexity <output id="ov-cx-o"></output></label><input type="range" id="ov-cx" min="1" max="5" step="1" value="2"></div>
+          <div class="detail-panel" data-reco aria-live="polite"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <h2>1.5 The three case studies you will follow</h2>
+  <p>The report picked three use cases that differ in automation, data sensitivity and risk. Together they cover core actuarial work (reporting), insurance-specific work (underwriting) and a non-insurance-specific activity (marketing). You will meet them throughout the course and study them in depth in Part D.</p>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Case</th><th>What the AI does</th><th>Workflow and oversight</th><th>Main sensitivities</th></tr></thead>
+      <tbody>
+        <tr><td>Actuarial reporting</td><td>Drafts regulatory, management and technical reports from multiple data sources, with narrative commentary</td><td>Agent-led, human in/on the loop</td><td>Confidential financial data, report accuracy</td></tr>
+        <tr><td>Marketing chatbot</td><td>Recommends products in real time, using personal data and a propensity-to-buy score</td><td>Agent-led, human out of the loop</td><td>Privacy, fairness, disclosure, customer-facing errors</td></tr>
+        <tr><td>Underwriting support</td><td>Analyses applications, queries a scoring model and recommends accept, accept with conditions, or decline</td><td>Human-led, agent support</td><td>Health data, unfair discrimination, high-impact decisions</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <blockquote class="pull">The aim is for actuaries to be "not merely users of AI systems, but informed stewards" who guide implementations that are effective, ethical, compliant and aligned with sound risk management and public trust.<cite>Report §1.7, paraphrased</cite></blockquote>
+
+  <div class="callout practice">
+    <span class="c-label">A living framework</span>
+    <p>The report presents its guidance as a foundation, not a static rulebook. Model capabilities change within months and regulation is still taking shape. The principles, processes and checklists are meant to stay relevant as specific tools change, alongside ongoing professional development.</p>
+  </div>
+
+  <div class="quiz" data-quiz="m1"></div>
+
+  <div class="takeaways">
+    <h2>Key takeaways</h2>
+    <ul>
+      <li>GenAI acts as a cognitive support layer across the value chain: it extracts, supports decisions and generates content.</li>
+      <li>Five challenges drive new governance needs: shifting roles, opacity, validating language and images, new security threats, and production monitoring.</li>
+      <li>Decide early who leads (human or agent) and how strong oversight is (in, on or out of the loop).</li>
+      <li>Oversight should rise with stakes and complexity. At the highest stakes, keep the process human-only.</li>
+    </ul>
+  </div>
+</section>

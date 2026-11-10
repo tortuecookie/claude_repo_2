@@ -1,0 +1,169 @@
+<section class="page" id="page-m7" aria-labelledby="m7-title" hidden>
+  <div class="mod-head">
+    <h1 id="m7-title">Governance across the AI lifecycle</h1>
+    <p class="lede">This is the practical core of the report: a lifecycle in four phases, three dimensions of governance built into each, five living documents, and a checklist that structures decisions from the first idea to live monitoring.</p>
+  </div>
+
+  <div class="objectives">
+    <h2>By the end of this module you can</h2>
+    <ul>
+      <li>Describe what happens in the planning, design, development and deployment phases.</li>
+      <li>Explain how safety, data governance and model and system governance are built into every phase.</li>
+      <li>Say what each of the five governance artifacts contains and when it is created.</li>
+      <li>Apply the checklist proportionately, taking your role and any third-party dependencies into account.</li>
+    </ul>
+  </div>
+
+  <h2>7.1 Model or system?</h2>
+  <p>The report follows the IAA (2025), which takes the OECD definition. The <strong>AI model</strong> is the core component that makes inferences from inputs to produce outputs. The <strong>AI system</strong> is everything around it: infrastructure, data flows, tools, oversight and governance. Many critical risks (bias, hallucination, lack of explainability) start in the model, but governance applies to the whole system.</p>
+  <div class="callout example">
+    <span class="c-label">Mixed systems are the norm</span>
+    <p>One system may combine a third-party LLM that writes narrative with a traditional ML component such as a GLM for pricing. The two need different validation strategies and lifecycles. In the case studies, the traditional models are assumed to be validated separately beforehand. The lifecycle here focuses on the system and its GenAI components.</p>
+  </div>
+
+  <h2>7.2 Four phases</h2>
+  <div class="figure wide">
+    <div class="flow">
+      <div class="node"><b>1 · Planning</b>Why? Business purpose, stakeholders, governance structure, preliminary risk assessment, data sources, architecture type (e.g., agents or RAG), applicable rules, documentation started.</div>
+      <span class="arrow">→</span>
+      <div class="node"><b>2 · Design</b>How? Architecture, data flows, security safeguards, GenAI/ML split, human oversight and escalation, evaluation approach proportionate to risk, artifacts initialised.</div>
+      <span class="arrow">→</span>
+      <div class="node"><b>3 · Development</b>Build and validate: prompt engineering, orchestration, reasoning patterns. Run the evaluations, test safeguards under normal and adversarial conditions, verify oversight, document everything.</div>
+      <span class="arrow">→</span>
+      <div class="node"><b>4 · Deployment</b>Productization as a reproducible, versioned release, then continuous monitoring of quality, drift, operations and expert feedback.</div>
+    </div>
+    <p class="fig-cap">§4.1. Design is often iterative rather than strictly sequential, and development findings can send you back to adjust the model, its data or its system prompt.</p>
+  </div>
+
+  <h2>7.3 Three dimensions in every phase</h2>
+  <p>Safety, data governance, and model and system governance are not separate workstreams. Each one is built into every phase.</p>
+  <div class="grid g3">
+    <div class="card red"><h4>Safety</h4><p>Performance, fairness, robustness and security; risks identified and mitigated.</p></div>
+    <div class="card teal"><h4>Data governance</h4><p>Quality, traceability, privacy and compliance of data from collection and labelling to storage and use.</p></div>
+    <div class="card navy"><h4>Model and system governance</h4><p>Version control, performance monitoring, documentation, auditability and compliance with internal and regulatory standards.</p></div>
+  </div>
+
+  <div class="figure wide">
+    <div class="diagram-scroll">
+      <div class="lc">
+        <div></div><div class="lh">Planning</div><div class="lh">Design</div><div class="lh">Development</div><div class="lh">Deployment</div>
+        <div class="rh">General</div><div class="cell">Scope and objective of the system</div><div class="cell">Update documentation</div><div class="cell">Update documentation</div><div class="cell">Productization, versioning, monitoring</div>
+        <div class="rh">Data governance</div><div class="cell">Start the living documentation for the use case</div><div class="cell">Nature and provenance of the data</div><div class="cell">Pre-processing, bias testing</div><div class="cell">Data drift monitoring, data quality</div>
+        <div class="rh">Model and system</div><div class="cell">Start the living documentation for the use case</div><div class="cell">Model choice, explainability methods, accuracy and fairness metrics</div><div class="cell">Alignment, (training), testing, validation, end-to-end traceability</div><div class="cell">Monitoring platform, model drift, continuous human oversight</div>
+        <div class="rh">Safety</div><div class="cell">Preliminary impact assessment, risk identification</div><div class="cell">Identify provider dependencies</div><div class="cell">Validation method (LLM-as-a-judge, evaluation skills), red teaming, toxicity</div><div class="cell">Access control, scheduled red teaming, user feedback, key risk monitoring</div>
+      </div>
+    </div>
+    <p class="fig-cap">Table 5: governance and safety throughout the AI system lifecycle (§5.4). Scroll sideways on small screens.</p>
+  </div>
+
+  <h2>7.4 Five living documents</h2>
+  <p>In a regulated environment, documentation shows that you understand the system, its purpose and how it is meant to work. The report recommends five artifacts, started at planning and updated at every phase. They also serve as raw material for documents the law may require, such as impact assessments and technical documentation.</p>
+  <div class="grid g3">
+    <div class="card"><span class="tag">Dataset</span><h4>Data sheet</h4><p>Motivation, composition, collection, preprocessing, intended uses, distribution and maintenance of a dataset.</p></div>
+    <div class="card"><span class="tag">Model</span><h4>Model card</h4><p>Intended use, performance across conditions and demographic groups, training data, limitations, ethical considerations.</p></div>
+    <div class="card"><span class="tag">Whole system</span><h4>System card</h4><p>How the model is integrated, deployment context, safety evaluations, risk mitigations and real-world test results.</p></div>
+    <div class="card"><span class="tag">Stakeholder summary</span><h4>Fact sheet</h4><p>Short summary of purpose, performance, fairness metrics, limitations and intended deployment conditions.</p></div>
+    <div class="card"><span class="tag">Risks</span><h4>Risk register</h4><p>Each identified risk with likelihood, severity, mitigation and owner. Borrowed from project and risk management.</p></div>
+    <div class="card amber"><span class="tag">Plus</span><h4>What the law requires</h4><p>Impact assessments, technical documentation or other records mandated by applicable frameworks.</p></div>
+  </div>
+
+  <h2>7.5 Inside each phase</h2>
+  <div class="tabs wide">
+    <div class="tab-list">
+      <button type="button">Planning</button>
+      <button type="button">Design</button>
+      <button type="button">Development</button>
+      <button type="button">Deployment</button>
+    </div>
+    <div class="tab-panel">
+      <ol class="steps">
+        <li><strong>Scope and business objectives.</strong> Document the use case (pricing, underwriting, claims, fraud…), its objective and why an AI approach is justified.</li>
+        <li><strong>Risk, compliance and governance framework.</strong> Classify the risk level under applicable rules, internal model risk policy and supervisory expectations. Run a preliminary impact assessment covering prudential, ethical, consumer protection and reputational aspects. List applicable regulations and standards, define roles, and set fairness, transparency and explainability principles.</li>
+        <li><strong>Evaluation criteria.</strong> Define measurable success criteria: technical (accuracy), business (turnaround time, cost, satisfaction) and consumer impact (transparency, equitable treatment). Check that the AI approach adds value over simpler alternatives, and document trade-offs.</li>
+        <li><strong>Start the lifecycle documents</strong> with planning decisions, intended use, risks and governance structure.</li>
+      </ol>
+      <h4>A risk harm matrix</h4>
+      <p>The checklist asks for a <strong>severity × likelihood</strong> matrix and the identification of "deal breaker" or "must mitigate" risks. An illustration using the reporting case of Module 9:</p>
+      <div class="diagram-scroll">
+        <div class="heat" style="min-width:30rem">
+          <div class="h"></div><div class="h">Low severity</div><div class="h">Medium severity</div><div class="h">High severity</div>
+          <div class="h">Likely</div><div class="c md">Inconsistent tone across slides</div><div class="c hi">Narrative not faithful to the data</div><div class="c hi">Wrong figures in a regulatory report</div>
+          <div class="h">Possible</div><div class="c lo">LLM service outage</div><div class="c md">Unannounced provider model update</div><div class="c hi">Leak of confidential financial data</div>
+          <div class="h">Rare</div><div class="c lo">Excess reasoning loops</div><div class="c lo">Selective emphasis downplaying trends</div><div class="c md">Agent reaches out-of-scope data</div>
+        </div>
+      </div>
+      <p class="fig-cap">Illustrative placement by the trainer. Your own ratings will depend on your controls and context.</p>
+    </div>
+    <div class="tab-panel">
+      <p>Design turns objectives into technical and organisational choices. Choices in one area affect the others, so the work is iterative.</p>
+      <ul>
+        <li><strong>Data governance.</strong> Specify sources, collection, labelling, preprocessing and representativeness criteria in line with fairness principles. Set quality expectations, access controls and lineage tracking. Before any collection, check lawfulness and authorisation, consent or another legal basis, minimisation and purpose limitation.</li>
+        <li><strong>Model and system governance.</strong> Justify the architecture: foundation model, fine-tuned model or RAG, and the data used. For high-risk systems, weigh interpretability, reliability and safety alongside performance (open-weight models allow more inspection). Pick fairness methods (bias audits, subgroup analysis) and explainability methods (reasoning traces, structured explanations) suited to the audience: policyholders, regulators or internal users. Decide where humans review, how much authority the AI has, and how uncertain or high-stakes outputs escalate.</li>
+        <li><strong>Safety.</strong> Identify threats by use case: hallucinations, harmful or biased outputs, adversarial attacks, data leakage. A customer chatbot is most exposed to reputational damage, attacks and leakage. An internal recommender is more exposed to biased decisions and unauthorised access to sensitive data. For external models and APIs, set compliance and security controls. A unified API gateway reduces provider dependency, and AI firewalls block malicious prompts and filter outputs. Record design-specific risks.</li>
+      </ul>
+    </div>
+    <div class="tab-panel">
+      <ul>
+        <li><strong>Data governance.</strong> Prepare data (missing values, outliers, imbalance, feature selection, embeddings) and document each step, because it helps explain behaviour. If a third party prepares the data, check that its practices meet your principles and assess its quality controls.</li>
+        <li><strong>Model and system governance.</strong> Align the model with prompts, fine-tuning or RAG as designed. Validate against the agreed performance, fairness and explainability metrics, using LLM-as-a-judge for general or RAG systems and structured frameworks for agents. Run non-discrimination tests across protected groups, and check that explanations are meaningful for their audience.</li>
+        <li><strong>Safety.</strong> Write the system prompt to carry the guardrails and reduce hallucinations. Red-team the system. Test toxicity with evaluation datasets or moderation APIs. Test for data leakage.</li>
+        <li><strong>Traceability.</strong> For any output, you should be able to reconstruct the input data, model version, prompt version and decision logic.</li>
+        <li><strong>Documentation.</strong> Record key choices (model, alignment technique, hyperparameters, prompt design) and their rationale, including approaches that were tried and dropped, and why.</li>
+      </ul>
+    </div>
+    <div class="tab-panel">
+      <h4>Productization</h4>
+      <ul>
+        <li><strong>Containerisation</strong> (e.g., Docker) for portable, reproducible environments.</li>
+        <li><strong>CI/CD pipelines</strong> (e.g., Jenkins) that test every update (new features, drift fixes, bug fixes) before release. An incomplete pipeline lets errors reach production.</li>
+        <li><strong>Version control</strong> of every component, including system prompts and configuration, for traceability and rollback.</li>
+        <li><strong>A secure environment</strong> with access control, and a procedure for security incidents.</li>
+      </ul>
+      <h4>Continuous monitoring</h4>
+      <ul>
+        <li><strong>Data:</strong> watch for data drift between alignment data and production data.</li>
+        <li><strong>Model and system:</strong> monitoring platforms track performance and reliability (e.g., response time) and business metrics (e.g., user feedback). Prompt versioning allows controlled updates.</li>
+        <li><strong>Safety:</strong> periodic red teaming and prompt injection tests, user feedback, and tracking of the key risks identified earlier.</li>
+      </ul>
+    </div>
+  </div>
+
+  <section class="exercise" data-x="sorter">
+    <header><span class="x-tag">Exercise</span><h3>Which phase does it belong to?</h3></header>
+    <div class="x-body">
+      <p>Assign each checklist activity to its lifecycle phase, then check your answers.</p>
+      <div class="stack" data-sort-items>
+        <div class="sort-row" data-answer="Planning"><span>Develop a risk harm matrix (severity × likelihood)</span></div>
+        <div class="sort-row" data-answer="Design"><span>Define predefined escalation triggers and the ability to override the system</span></div>
+        <div class="sort-row" data-answer="Development"><span>Run adversarial and robustness testing</span></div>
+        <div class="sort-row" data-answer="Deployment"><span>Prepare or adapt the incident response plan</span></div>
+        <div class="sort-row" data-answer="Design"><span>Design a data flow diagram and check privacy requirements</span></div>
+        <div class="sort-row" data-answer="Planning"><span>Decide which governance artifacts the system needs</span></div>
+        <div class="sort-row" data-answer="Deployment"><span>Design and apply retraining triggers linked to drift and feedback</span></div>
+        <div class="sort-row" data-answer="Development"><span>Confirm documentation completeness in a final validation</span></div>
+      </div>
+      <div class="btn-row" style="margin-top:12px"><button class="btn primary small" type="button" data-sort-check>Check my answers</button><span class="small muted" data-sort-out aria-live="polite"></span></div>
+    </div>
+  </section>
+
+  <h2>7.6 Using the checklist well</h2>
+  <div class="grid g2">
+    <div class="card navy"><h4>It structures reasoning</h4><p>The checklist does not prescribe actions or replace legal requirements. It helps you spot risk factors and governance questions. Controls are decided case by case after your organisation's own legal and risk assessment.</p></div>
+    <div class="card navy"><h4>It is proportionate</h4><p>Where the law does not impose extensive documentation, apply it in a tailored way that reflects the system's risk and intended use.</p></div>
+    <div class="card navy"><h4>Your role matters</h4><p>Insurance rules mostly key on the use case and data, not on the type of actor. Regimes such as the EU AI Act distinguish developers or providers from deployers, so take your role into account.</p></div>
+    <div class="card navy"><h4>Third parties need attention</h4><p>When you rely on third-party models, focus on vendor due diligence, third-party risk and deployment controls. Downstream providers of general-purpose AI can rely on the GPAI provider's <em>code of practice</em> under the EU AI Act. Your duties still go beyond checking the vendor.</p></div>
+  </div>
+  <div class="btn-row"><a class="btn primary" href="#toolkit">Open the interactive checklist</a></div>
+
+  <div class="quiz" data-quiz="m7"></div>
+
+  <div class="takeaways">
+    <h2>Key takeaways</h2>
+    <ul>
+      <li>Govern the whole system, not only the model, and validate GenAI and traditional ML components on their own terms.</li>
+      <li>Planning sets the why, design the how, development builds and proves it, and deployment keeps it reliable.</li>
+      <li>Build safety, data governance and model and system governance into every phase.</li>
+      <li>Start the five living documents early and keep them current. They feed your regulatory documentation.</li>
+    </ul>
+  </div>
+</section>

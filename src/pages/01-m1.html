@@ -116,6 +116,7 @@
 
   <h2>1.4 Matching oversight to stakes and complexity</h2>
   <p>The report plots use cases on two axes. The <strong>horizontal axis</strong> carries risk, ethical and governance stakes: the higher the stakes, the more oversight is recommended, up to human-only processes at the extreme. The <strong>vertical axis</strong> carries the complexity of the goal: complex tasks need more sophisticated reasoning, and also stronger human checkpoints, because LLMs and agents are most reliable over short reasoning steps.</p>
+  <p>The result is a map of zones. Where stakes are lower, agentic workflows are possible, and oversight tightens as complexity rises: traditional automation for simple tasks, then human out of the loop, on the loop, and in the loop for the most complex goals. Where stakes are higher, the workflow becomes human-led, with automation or AI agent support. At the highest stakes, the process stays human only.</p>
 
   <section class="exercise wide" data-x="oversight">
     <header><span class="x-tag">Exercise</span><h3>Place a use case on the interaction matrix</h3></header>
@@ -124,14 +125,17 @@
       <div class="matrix-wrap">
         <div>
           <div class="matrix" aria-label="Interaction matrix: risk on the horizontal axis, complexity on the vertical axis">
-            <div class="band b1">agent-led,<br>light oversight</div>
-            <div class="band b2">agent-led,<br>in/on the loop</div>
-            <div class="band b3">human-led,<br>agent support</div>
-            <div class="band b4">human only</div>
+            <div class="zone z-ag" style="left:0;width:55%;bottom:0;height:21%">Traditional automation</div>
+            <div class="zone z-ag" style="left:0;width:55%;bottom:21%;height:28%">Agentic workflow<br>human out of the loop</div>
+            <div class="zone z-ag" style="left:0;width:55%;bottom:49%;height:20%">Agentic workflow<br>human on the loop</div>
+            <div class="zone z-ag" style="left:0;width:55%;bottom:69%;height:31%">Agentic workflow<br>human in the loop</div>
+            <div class="zone z-hl" style="left:55%;width:29%;bottom:0;height:43%">Human-led with automation support</div>
+            <div class="zone z-hl" style="left:55%;width:29%;bottom:43%;height:57%">Human-led with AI agent support</div>
+            <div class="zone z-ho" style="left:84%;width:16%;bottom:0;height:100%">Human only</div>
             <div class="axis-x">Risk, ethical and governance stakes →</div>
             <div class="axis-y">Complexity of the goal and tasks →</div>
           </div>
-          <p class="fig-cap">Schematic after Figures 2, 7 and 11 (adapted by the report from Martin et al., 2025). Positions are indicative. R = actuarial reporting, M = marketing chatbot, U = underwriting support.</p>
+          <p class="fig-cap">Redrawn from Figure 2 of the report (also Figures 7 and 11), itself adapted from Martin et al. (2025). Zone sizes and dot positions are approximate. R = actuarial reporting, M = marketing chatbot, U = underwriting support. The star and its suggestion are a teaching aid, not part of the report.</p>
         </div>
         <div>
           <div class="detail-panel" data-info><p class="muted">Select R, M or U on the matrix.</p></div>

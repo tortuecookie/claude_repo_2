@@ -26,32 +26,37 @@
 
   <div class="figure wide">
     <div class="arch">
-      <div class="zone"><span class="z-label">Customer side</span>
-        <div class="box"><b>Policyholder</b>Chats in natural language</div>
-        <div class="box guard"><b>AI disclosure notice</b>At the start of every conversation</div>
-        <div class="box guard"><b>Input sanitisation and guardrails</b>Format checks, blocklists, injection and exfiltration detection</div>
-        <div class="box guard"><b>Opt-out layer</b>Where opt-out rights apply</div>
-        <div class="box guard"><b>Output guardrails</b>Toxicity, bias, hallucination checks before delivery</div>
-        <div class="box"><b>Feedback after each interaction</b></div>
+      <div class="zone"><span class="z-label">Request and output</span>
+        <div class="box"><b>Policyholder request</b>Free form, chat</div>
+        <div class="box guard"><b>Sanitisation</b>Blocks injection and exfiltration attempts</div>
+        <div class="box guard"><b>Opt-out layer *</b>Where opt-out rights apply</div>
+        <div class="box guard"><b>Output controls</b>Toxicity, bias, hallucinations</div>
+        <div class="box guard"><b>AI disclosure notice</b></div>
+        <div class="box"><b>Audience selection recommendation</b>Delivered in the conversation</div>
+        <div class="box guard"><b>Collect customer feedback</b></div>
       </div>
       <div class="zone"><span class="z-label">Agent</span>
-        <div class="box core"><b>Conversational agent</b>Plans, retrieves, scores, writes persuasive content</div>
-        <div class="box"><b>External LLM API</b></div>
+        <div class="box core"><b>Agentic architecture</b>Plans, retrieves, calls the score, writes the answer</div>
+        <div class="box"><b>LLM API</b></div>
         <div class="box guard"><b>Third-party controls</b></div>
-        <div class="box"><b>Memory</b>Temporary, with sanitisation so one user's data never surfaces for another</div>
-        <div class="box guard"><b>Strict session isolation</b></div>
-        <div class="box guard"><b>Escalation trigger and kill switch</b>Graceful exit, fallback message to other channels</div>
+        <div class="box"><b>Memory database</b></div>
+        <div class="box guard"><b>Monitoring check</b>No user's data surfaces in another session</div>
+        <div class="box guard"><b>Strict session isolation *</b></div>
+        <div class="box guard"><b>Logging interactions</b>Into log files, themselves under a monitoring check</div>
+        <div class="box guard"><b>Escalation trigger and deactivation mechanism *</b>Graceful exit, fallback to other channels</div>
       </div>
-      <div class="zone"><span class="z-label">Data and tools</span>
-        <div class="box"><b>Customer data</b>Only attributes needed for this session</div>
-        <div class="box guard"><b>Data access controls (RBAC)</b></div>
-        <div class="box"><b>RAG over product and policy catalogue</b></div>
-        <div class="box"><b>Propensity-to-buy scoring tool</b>Validated separately</div>
-        <div class="box guard"><b>Logging of every element of each conversation</b></div>
+      <div class="zone"><span class="z-label">Tools and data</span>
+        <div class="box guard"><b>MCP access control</b></div>
+        <div class="box"><b>Propensity-to-buy score</b>Tool, validated separately</div>
+        <div class="box guard"><b>Secure data transfer</b></div>
+        <div class="box"><b>Personal information, personal data or NPI</b></div>
+        <div class="box guard"><b>Data access control</b></div>
+        <div class="box"><b>RAG with extracted data</b></div>
+        <div class="box"><b>Company database</b>Policies, products</div>
       </div>
     </div>
-    <div class="legend"><span class="lg-core">Agent core</span><span class="lg-plain">Component</span><span class="lg-guard">Safeguard</span></div>
-    <p class="fig-cap">Reconstructed from §6.2.1 and the safeguards in §6.2.2. The report's own diagram is Figure 13.</p>
+    <div class="legend"><span class="lg-core">Agent core</span><span class="lg-plain">Component or data</span><span class="lg-guard">Safeguard</span></div>
+    <p class="fig-cap">Simplified from Figure 13 of the report, where safeguards appear in red. Items marked * are described in the text (§6.2.2.2) but not drawn in the figure.</p>
   </div>
 
   <div class="callout watch">
@@ -102,7 +107,7 @@
         <li><strong>Explaining to humans:</strong> when a complaint handler, compliance reviewer or regulator questions a recommendation, the logs should support a plain-language account of which data, which score and which logic were used.</li>
       </ul>
       <h4>Oversight, accountability, escalation</h4>
-      <p>Human-out-of-the-loop is driven by the real-time nature of the use case, and puts a heavier burden on automated controls and post-deployment monitoring. Marketing answers for commercial appropriateness, data science or actuarial for the score's accuracy and fairness, and the system owner for overall quality and safety, including complaints and reputation. Automated triggers end conversations gracefully when thresholds are breached. A kill switch with a fallback message sends customers to other channels if a systemic issue appears.</p>
+      <p>Human-out-of-the-loop is driven by the real-time nature of the use case, and puts a heavier burden on automated controls and post-deployment monitoring. Marketing answers for commercial appropriateness, data science or actuarial for the score's accuracy and fairness, and the system owner for overall quality and safety, including complaints and reputation. Automated triggers end conversations gracefully when thresholds are breached. If a systemic issue appears, a deactivation mechanism suspends the system and a predefined fallback message sends customers to other support channels.</p>
       <h4>Evaluation plan</h4>
       <div class="tbl-wrap">
         <table>
@@ -168,7 +173,7 @@
       <template data-for="c1"><p><b>Legitimate question, sensitive answer.</b> Respond helpfully about why the product may suit the customer's stated needs, without revealing the propensity score, the features behind it or raw personal data. Covered by operational boundaries and the disclosure test scenarios.</p></template>
       <template data-for="c2"><p><b>Direct prompt injection and data exfiltration attempt.</b> Blocked by the input sanitisation layer. Strict session isolation means no other customer's data is reachable anyway. Logged as a security event.</p></template>
       <template data-for="c3"><p><b>Out-of-scope question about internal practices.</b> The agent deflects without giving any information. Segmentation logic and pricing are confidential business information.</p></template>
-      <template data-for="c4"><p><b>Out-of-scope and potentially harmful.</b> The agent gives no medical, legal or claims advice. Forced answers outside its expertise raise hallucination and bias risk. It redirects politely, and an escalation trigger may hand over to a human channel.</p></template>
+      <template data-for="c4"><p><b>Out-of-scope and potentially harmful.</b> The agent gives no medical, legal or claims advice. Forced answers outside its expertise raise hallucination and bias risk. It declines politely. If the exchange keeps pushing out of scope, an escalation trigger can end it gracefully and point the customer to other support channels.</p></template>
       <template data-for="c5"><p><b>Multi-turn ("Crescendo") probing.</b> Each step looks harmless, but together they push the agent towards revealing what it would refuse if asked directly. Test multi-turn scenarios specifically. The output guardrails check every turn for direct or indirect disclosure of sensitive factors.</p></template>
     </div>
   </section>

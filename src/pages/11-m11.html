@@ -33,30 +33,37 @@
 
   <div class="figure wide">
     <div class="arch">
-      <div class="zone"><span class="z-label">Underwriter</span>
-        <div class="box human"><b>Underwriter</b>Holds full decision authority; can override or escalate at any stage</div>
-        <div class="box guard"><b>RBAC</b>Secured, controlled access</div>
-        <div class="box human"><b>Decision recorded</b>Approve, decline or refer, in the system of record; overrides documented</div>
+      <div class="zone"><span class="z-label">Request and decision</span>
+        <div class="box"><b>Underwriter request</b></div>
+        <div class="box guard"><b>Sanitisation</b></div>
+        <div class="box guard"><b>LLM-as-a-judge check control</b>Tool use and reasoning consistent with inputs</div>
+        <div class="box"><b>Output analysis for the underwriter</b>Recommendation, explanation, visuals</div>
+        <div class="box guard"><b>Verification by the underwriter</b>Can override or escalate at any stage</div>
+        <div class="box"><b>Underwriting decision from the underwriter</b>Recorded in the system of record</div>
       </div>
       <div class="zone"><span class="z-label">Agent</span>
-        <div class="box core"><b>Underwriting agent</b>Coordinates retrieval, tools and synthesis</div>
-        <div class="box"><b>External LLM API</b></div>
+        <div class="box core"><b>Agentic architecture</b>Coordinates retrieval, tools and synthesis</div>
+        <div class="box"><b>LLM API</b></div>
         <div class="box guard"><b>Third-party controls</b></div>
-        <div class="box guard"><b>Data minimisation at the LLM layer</b>Only what the recommendation needs</div>
-        <div class="box"><b>Memory database</b>Session information</div>
-        <div class="box guard"><b>Monitoring check; context cleared between applicants</b></div>
-        <div class="box guard"><b>LLM-as-a-judge checks</b>Tool use and reasoning consistent with inputs</div>
+        <div class="box guard"><b>Data minimisation at the LLM layer *</b>Only what the recommendation needs; context cleared between applicants</div>
+        <div class="box"><b>Memory database</b></div>
+        <div class="box guard"><b>Monitoring check</b></div>
+        <div class="box guard"><b>Logging interactions</b>Into log files, themselves under a monitoring check</div>
+        <div class="box guard"><b>RBAC *</b></div>
       </div>
-      <div class="zone"><span class="z-label">Data and tools via MCP</span>
-        <div class="box guard"><b>Secure data transfer and access controls</b></div>
-        <div class="box"><b>RAG over applicant data and medical records</b></div>
-        <div class="box"><b>Scoring model</b>Risk or acceptance probability; validated separately</div>
+      <div class="zone"><span class="z-label">Tools and data</span>
+        <div class="box guard"><b>MCP access control</b></div>
+        <div class="box"><b>Scoring</b>Risk or acceptance probability; validated separately</div>
         <div class="box"><b>Interpretability toolbox</b>Factors behind the score</div>
         <div class="box"><b>Graphic tool</b>Visuals of key risk factors for declines</div>
+        <div class="box guard"><b>Data access control</b></div>
+        <div class="box"><b>RAG with extracted data</b></div>
+        <div class="box guard"><b>Secure data transfer</b></div>
+        <div class="box"><b>Applicant data and medical records</b></div>
       </div>
     </div>
-    <div class="legend"><span class="lg-core">Agent core</span><span class="lg-plain">Component</span><span class="lg-guard">Safeguard</span><span class="lg-human">Human oversight</span></div>
-    <p class="fig-cap">Reconstructed from §6.3.1 and the safeguards in §6.3.2. The report's own diagram is Figure 14.</p>
+    <div class="legend"><span class="lg-core">Agent core</span><span class="lg-plain">Component or data</span><span class="lg-guard">Safeguard</span></div>
+    <p class="fig-cap">Simplified from Figure 14 of the report, where safeguards appear in red. Items marked * are described in the text (§6.3.2.2.2) but not drawn in the figure.</p>
   </div>
 
   <h2>11.2 The checklist, phase by phase</h2>

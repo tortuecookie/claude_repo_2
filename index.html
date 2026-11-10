@@ -292,11 +292,10 @@ details.acc > .acc-body { padding: 0 18px 8px 40px; }
 /* Oversight matrix */
 .matrix-wrap { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 18px; align-items: start; }
 .matrix { position: relative; aspect-ratio: 1 / 1; max-width: 100%; border-left: 2px solid var(--ink-2); border-bottom: 2px solid var(--ink-2); margin: 0 0 34px 34px; }
-.matrix .band { position: absolute; top: 0; bottom: 0; display: grid; place-items: end center; padding-bottom: 6px; font-family: var(--f-mono); font-size: .66rem; text-align: center; color: var(--ink-2); line-height: 1.2; }
-.matrix .b1 { left: 0; width: 34%; background: color-mix(in srgb, var(--teal) 10%, transparent); }
-.matrix .b2 { left: 34%; width: 33%; background: color-mix(in srgb, var(--amber) 10%, transparent); }
-.matrix .b3 { left: 67%; width: 23%; background: color-mix(in srgb, var(--red) 10%, transparent); }
-.matrix .b4 { left: 90%; width: 10%; background: color-mix(in srgb, var(--red) 22%, transparent); writing-mode: vertical-rl; place-items: center; padding: 0; }
+.matrix .zone { position: absolute; display: grid; place-items: center; padding: 4px; font-family: var(--f-mono); font-size: .64rem; text-align: center; color: var(--ink-2); line-height: 1.25; border: 1px solid var(--surface); }
+.matrix .z-ag { background: color-mix(in srgb, var(--navy) 14%, transparent); }
+.matrix .z-hl { background: color-mix(in srgb, var(--teal) 14%, transparent); }
+.matrix .z-ho { background: color-mix(in srgb, var(--amber) 14%, transparent); }
 .matrix .axis-x { position: absolute; left: 0; right: 0; bottom: -30px; text-align: center; font-family: var(--f-mono); font-size: .7rem; color: var(--ink-2); }
 .matrix .axis-y { position: absolute; top: 0; bottom: 0; left: -32px; writing-mode: vertical-rl; transform: rotate(180deg); text-align: center; font-family: var(--f-mono); font-size: .7rem; color: var(--ink-2); }
 .matrix .dot {
@@ -715,6 +714,7 @@ pre.out { white-space: pre-wrap; word-break: break-word; font-family: var(--f-mo
 
   <h2>1.4 Matching oversight to stakes and complexity</h2>
   <p>The report plots use cases on two axes. The <strong>horizontal axis</strong> carries risk, ethical and governance stakes: the higher the stakes, the more oversight is recommended, up to human-only processes at the extreme. The <strong>vertical axis</strong> carries the complexity of the goal: complex tasks need more sophisticated reasoning, and also stronger human checkpoints, because LLMs and agents are most reliable over short reasoning steps.</p>
+  <p>The result is a map of zones. Where stakes are lower, agentic workflows are possible, and oversight tightens as complexity rises: traditional automation for simple tasks, then human out of the loop, on the loop, and in the loop for the most complex goals. Where stakes are higher, the workflow becomes human-led, with automation or AI agent support. At the highest stakes, the process stays human only.</p>
 
   <section class="exercise wide" data-x="oversight">
     <header><span class="x-tag">Exercise</span><h3>Place a use case on the interaction matrix</h3></header>
@@ -723,14 +723,17 @@ pre.out { white-space: pre-wrap; word-break: break-word; font-family: var(--f-mo
       <div class="matrix-wrap">
         <div>
           <div class="matrix" aria-label="Interaction matrix: risk on the horizontal axis, complexity on the vertical axis">
-            <div class="band b1">agent-led,<br>light oversight</div>
-            <div class="band b2">agent-led,<br>in/on the loop</div>
-            <div class="band b3">human-led,<br>agent support</div>
-            <div class="band b4">human only</div>
+            <div class="zone z-ag" style="left:0;width:55%;bottom:0;height:21%">Traditional automation</div>
+            <div class="zone z-ag" style="left:0;width:55%;bottom:21%;height:28%">Agentic workflow<br>human out of the loop</div>
+            <div class="zone z-ag" style="left:0;width:55%;bottom:49%;height:20%">Agentic workflow<br>human on the loop</div>
+            <div class="zone z-ag" style="left:0;width:55%;bottom:69%;height:31%">Agentic workflow<br>human in the loop</div>
+            <div class="zone z-hl" style="left:55%;width:29%;bottom:0;height:43%">Human-led with automation support</div>
+            <div class="zone z-hl" style="left:55%;width:29%;bottom:43%;height:57%">Human-led with AI agent support</div>
+            <div class="zone z-ho" style="left:84%;width:16%;bottom:0;height:100%">Human only</div>
             <div class="axis-x">Risk, ethical and governance stakes →</div>
             <div class="axis-y">Complexity of the goal and tasks →</div>
           </div>
-          <p class="fig-cap">Schematic after Figures 2, 7 and 11 (adapted by the report from Martin et al., 2025). Positions are indicative. R = actuarial reporting, M = marketing chatbot, U = underwriting support.</p>
+          <p class="fig-cap">Redrawn from Figure 2 of the report (also Figures 7 and 11), itself adapted from Martin et al. (2025). Zone sizes and dot positions are approximate. R = actuarial reporting, M = marketing chatbot, U = underwriting support. The star and its suggestion are a teaching aid, not part of the report.</p>
         </div>
         <div>
           <div class="detail-panel" data-info><p class="muted">Select R, M or U on the matrix.</p></div>
@@ -849,11 +852,11 @@ pre.out { white-space: pre-wrap; word-break: break-word; font-family: var(--f-mo
     <table>
       <thead><tr><th>Model type</th><th>Typical strength</th><th>Insurance example</th></tr></thead>
       <tbody>
-        <tr><td>LLM</td><td>Extract and restructure information from raw text; summarise, classify, compare; generate text</td><td>Draft a summary of a customer's call with a sales representative</td></tr>
-        <tr><td>OCR</td><td>Extract information from unstructured documents (PDFs, images) into standard templates</td><td>Support claims management and fraud detection</td></tr>
-        <tr><td>Multimodal LLM</td><td>Extract and analyse audio and image content alongside text</td><td>Detect visual anomalies or inconsistencies in submitted documents</td></tr>
-        <tr><td>RAG</td><td>Find relevant information across many documents and ground generation in it</td><td>Analyse contract clauses; a chatbot that helps choose a contract</td></tr>
-        <tr><td>Agent</td><td>Gather information from heterogeneous sources and use validated tools through coordinated steps</td><td>Classify a risk profile with submitted documents, a validated ML scoring model and expert rules; automate actuarial reporting</td></tr>
+        <tr><td>LLM</td><td>Extract and restructure information from raw text; summarise, classify, compare and give preliminary assessments; generate text from internal knowledge and alignment</td><td>Text tasks specialised for actuarial work (see Module 3)</td></tr>
+        <tr><td>OCR</td><td>Extract information from unstructured documents (PDFs, images); structure it as JSON or tables for downstream models; convert layouts into standard templates</td><td>Support claims management and fraud detection</td></tr>
+        <tr><td>Multimodal LLM</td><td>Extract and analyse audio and image content alongside text, and generate from it</td><td>Detect visual anomalies or inconsistencies in submitted documents; draft a summary of customer calls with a sales representative</td></tr>
+        <tr><td>RAG</td><td>Find relevant information across many documents and ground analysis and generation in it</td><td>Analyse contract clauses; tailor a product to an applicant's risk profile; a chatbot that helps choose a contract</td></tr>
+        <tr><td>Agent</td><td>Gather information from heterogeneous sources and use validated tools through coordinated steps</td><td>Produce actuarial documentation; classify a risk profile with submitted documents, a validated ML scoring model and expert rules; automate actuarial reporting</td></tr>
       </tbody>
     </table>
   </div>
@@ -1378,7 +1381,7 @@ pre.out { white-space: pre-wrap; word-break: break-word; font-family: var(--f-mo
       </tbody>
     </table>
   </div>
-  <p class="tbl-caption">Summary view assembled from §5.3.4. Use it as a starting point when filling a risk register.</p>
+  <p class="tbl-caption">Trainer's summary drawing on §5.3.4 and the case studies; the report does not present this table. Use it as a starting point when filling a risk register.</p>
 
   <div class="quiz" data-quiz="m4"></div>
 
@@ -2094,38 +2097,40 @@ pre.out { white-space: pre-wrap; word-break: break-word; font-family: var(--f-mo
     <div class="card"><span class="tag">Workflow</span><p>Agent-led, human support</p></div>
     <div class="card"><span class="tag">Oversight</span><p>Human in and on the loop</p></div>
     <div class="card"><span class="tag">Data</span><p>Confidential enterprise financial data</p></div>
-    <div class="card"><span class="tag">Audience of output</span><p>Management, board, regulators</p></div>
+    <div class="card"><span class="tag">Output used by</span><p>Internal and external stakeholders, regulators</p></div>
   </div>
   <p>The actuary asks for a report "as of" a date (for example year-end 2025), points to the relevant data (model point files, economic scenarios) and, if needed, updates the prescribed presentation template, which says what to produce and how to format it. The interaction is deliberately <strong>not open-ended</strong>. Inputs include cash-flow model assumptions (economic and non-economic), scenario files, model outputs, model change documentation and previous reports. The system is for internal reporting and preparation only: it makes no consumer-facing underwriting, pricing, claims or marketing decisions.</p>
 
   <div class="figure wide">
     <div class="arch">
-      <div class="zone"><span class="z-label">User and oversight</span>
-        <div class="box human"><b>Actuary</b>Validates intermediate steps (in the loop), monitors progress and approves the final deck (on the loop)</div>
+      <div class="zone"><span class="z-label">Request and output</span>
+        <div class="box"><b>User action</b>Parametrised tool execution: date, data, template</div>
         <div class="box guard"><b>RBAC</b>Identity and permission check on every request</div>
-        <div class="box guard"><b>Input validation</b>Data schemas, type checks; malformed input rejected</div>
-        <div class="box human"><b>Review and approval</b>Numerical accuracy, actuarial analysis, compliant language, consistency across slides</div>
+        <div class="box guard"><b>Input validation and type safety *</b>Data schemas; malformed input rejected</div>
+        <div class="box guard"><b>Human on the loop</b>Actuary follows completion and approves the final deck</div>
+        <div class="box"><b>Final PowerPoint presentation</b></div>
       </div>
       <div class="zone"><span class="z-label">Agent</span>
-        <div class="box core"><b>AI orchestrator agent</b>Decides which data and tools to use, in which order, and builds the report</div>
-        <div class="box"><b>External LLM API</b>Reasoning and generation</div>
-        <div class="box guard"><b>Third-party controls</b>Vendor due diligence, contracts, version monitoring</div>
-        <div class="box"><b>Memory database</b>Structured outputs, draft narratives, session summaries</div>
-        <div class="box guard"><b>Retention policy and monitoring check</b></div>
-        <div class="box guard"><b>Logging of reasoning (CoT or ReAct), tool calls, outputs</b></div>
-        <div class="box guard"><b>Output guardrails</b>Leakage check, JSON grounding, escalation triggers</div>
+        <div class="box core"><b>Agentic architecture</b>Decides which data and tools to use, in which order, and builds the report</div>
+        <div class="box guard"><b>Human in the loop</b>Actuary validates intermediate steps</div>
+        <div class="box"><b>LLM API</b>Reasoning and generation</div>
+        <div class="box guard"><b>Third-party controls</b></div>
+        <div class="box"><b>Memory database</b></div>
+        <div class="box guard"><b>Filtering control and monitoring check</b>On what enters and stays in memory</div>
+        <div class="box guard"><b>Logging interactions</b>Into log files, themselves under a monitoring check</div>
+        <div class="box guard"><b>Output guardrails *</b>Leakage check, JSON grounding, escalation triggers</div>
       </div>
-      <div class="zone"><span class="z-label">Data and tools</span>
-        <div class="box"><b>Company financial data</b>Financial statements, policy data</div>
-        <div class="box"><b>External economic data</b>Market indicators, economic scenarios</div>
+      <div class="zone"><span class="z-label">Tools and data</span>
+        <div class="box guard"><b>MCP access control</b>Only predefined, validated tools</div>
+        <div class="box"><b>Actuarial model</b>Cash-flow projections (validated separately)</div>
+        <div class="box"><b>Validated tools to build the presentation</b>With the PowerPoint template</div>
+        <div class="box"><b>Extracted data</b></div>
         <div class="box guard"><b>Secure data transfer</b></div>
-        <div class="box guard"><b>MCP layer with access controls</b>Only predefined, validated tools</div>
-        <div class="box"><b>Cash-flow projection model</b>Balance sheet over scenarios (validated separately)</div>
-        <div class="box"><b>Pre-approved presentation templates</b></div>
+        <div class="box"><b>Database</b>Company data (financial, policies) and external economic data</div>
       </div>
     </div>
-    <div class="legend"><span class="lg-core">Agent core</span><span class="lg-plain">Component</span><span class="lg-guard">Safeguard</span><span class="lg-human">Human oversight</span></div>
-    <p class="fig-cap">Reconstructed from the description in §6.1.1.2 and the safeguards discussed in §6.1.2. The report's own diagram is Figure 12.</p>
+    <div class="legend"><span class="lg-core">Agent core</span><span class="lg-plain">Component or data</span><span class="lg-guard">Safeguard</span></div>
+    <p class="fig-cap">Simplified from Figure 12 of the report, where safeguards appear in red. Items marked * are described in the text (§6.1.2.2.2) but not drawn in the figure.</p>
   </div>
 
   <h3>Who is accountable</h3>
@@ -2280,32 +2285,37 @@ pre.out { white-space: pre-wrap; word-break: break-word; font-family: var(--f-mo
 
   <div class="figure wide">
     <div class="arch">
-      <div class="zone"><span class="z-label">Customer side</span>
-        <div class="box"><b>Policyholder</b>Chats in natural language</div>
-        <div class="box guard"><b>AI disclosure notice</b>At the start of every conversation</div>
-        <div class="box guard"><b>Input sanitisation and guardrails</b>Format checks, blocklists, injection and exfiltration detection</div>
-        <div class="box guard"><b>Opt-out layer</b>Where opt-out rights apply</div>
-        <div class="box guard"><b>Output guardrails</b>Toxicity, bias, hallucination checks before delivery</div>
-        <div class="box"><b>Feedback after each interaction</b></div>
+      <div class="zone"><span class="z-label">Request and output</span>
+        <div class="box"><b>Policyholder request</b>Free form, chat</div>
+        <div class="box guard"><b>Sanitisation</b>Blocks injection and exfiltration attempts</div>
+        <div class="box guard"><b>Opt-out layer *</b>Where opt-out rights apply</div>
+        <div class="box guard"><b>Output controls</b>Toxicity, bias, hallucinations</div>
+        <div class="box guard"><b>AI disclosure notice</b></div>
+        <div class="box"><b>Audience selection recommendation</b>Delivered in the conversation</div>
+        <div class="box guard"><b>Collect customer feedback</b></div>
       </div>
       <div class="zone"><span class="z-label">Agent</span>
-        <div class="box core"><b>Conversational agent</b>Plans, retrieves, scores, writes persuasive content</div>
-        <div class="box"><b>External LLM API</b></div>
+        <div class="box core"><b>Agentic architecture</b>Plans, retrieves, calls the score, writes the answer</div>
+        <div class="box"><b>LLM API</b></div>
         <div class="box guard"><b>Third-party controls</b></div>
-        <div class="box"><b>Memory</b>Temporary, with sanitisation so one user's data never surfaces for another</div>
-        <div class="box guard"><b>Strict session isolation</b></div>
-        <div class="box guard"><b>Escalation trigger and kill switch</b>Graceful exit, fallback message to other channels</div>
+        <div class="box"><b>Memory database</b></div>
+        <div class="box guard"><b>Monitoring check</b>No user's data surfaces in another session</div>
+        <div class="box guard"><b>Strict session isolation *</b></div>
+        <div class="box guard"><b>Logging interactions</b>Into log files, themselves under a monitoring check</div>
+        <div class="box guard"><b>Escalation trigger and deactivation mechanism *</b>Graceful exit, fallback to other channels</div>
       </div>
-      <div class="zone"><span class="z-label">Data and tools</span>
-        <div class="box"><b>Customer data</b>Only attributes needed for this session</div>
-        <div class="box guard"><b>Data access controls (RBAC)</b></div>
-        <div class="box"><b>RAG over product and policy catalogue</b></div>
-        <div class="box"><b>Propensity-to-buy scoring tool</b>Validated separately</div>
-        <div class="box guard"><b>Logging of every element of each conversation</b></div>
+      <div class="zone"><span class="z-label">Tools and data</span>
+        <div class="box guard"><b>MCP access control</b></div>
+        <div class="box"><b>Propensity-to-buy score</b>Tool, validated separately</div>
+        <div class="box guard"><b>Secure data transfer</b></div>
+        <div class="box"><b>Personal information, personal data or NPI</b></div>
+        <div class="box guard"><b>Data access control</b></div>
+        <div class="box"><b>RAG with extracted data</b></div>
+        <div class="box"><b>Company database</b>Policies, products</div>
       </div>
     </div>
-    <div class="legend"><span class="lg-core">Agent core</span><span class="lg-plain">Component</span><span class="lg-guard">Safeguard</span></div>
-    <p class="fig-cap">Reconstructed from §6.2.1 and the safeguards in §6.2.2. The report's own diagram is Figure 13.</p>
+    <div class="legend"><span class="lg-core">Agent core</span><span class="lg-plain">Component or data</span><span class="lg-guard">Safeguard</span></div>
+    <p class="fig-cap">Simplified from Figure 13 of the report, where safeguards appear in red. Items marked * are described in the text (§6.2.2.2) but not drawn in the figure.</p>
   </div>
 
   <div class="callout watch">
@@ -2356,7 +2366,7 @@ pre.out { white-space: pre-wrap; word-break: break-word; font-family: var(--f-mo
         <li><strong>Explaining to humans:</strong> when a complaint handler, compliance reviewer or regulator questions a recommendation, the logs should support a plain-language account of which data, which score and which logic were used.</li>
       </ul>
       <h4>Oversight, accountability, escalation</h4>
-      <p>Human-out-of-the-loop is driven by the real-time nature of the use case, and puts a heavier burden on automated controls and post-deployment monitoring. Marketing answers for commercial appropriateness, data science or actuarial for the score's accuracy and fairness, and the system owner for overall quality and safety, including complaints and reputation. Automated triggers end conversations gracefully when thresholds are breached. A kill switch with a fallback message sends customers to other channels if a systemic issue appears.</p>
+      <p>Human-out-of-the-loop is driven by the real-time nature of the use case, and puts a heavier burden on automated controls and post-deployment monitoring. Marketing answers for commercial appropriateness, data science or actuarial for the score's accuracy and fairness, and the system owner for overall quality and safety, including complaints and reputation. Automated triggers end conversations gracefully when thresholds are breached. If a systemic issue appears, a deactivation mechanism suspends the system and a predefined fallback message sends customers to other support channels.</p>
       <h4>Evaluation plan</h4>
       <div class="tbl-wrap">
         <table>
@@ -2422,7 +2432,7 @@ pre.out { white-space: pre-wrap; word-break: break-word; font-family: var(--f-mo
       <template data-for="c1"><p><b>Legitimate question, sensitive answer.</b> Respond helpfully about why the product may suit the customer's stated needs, without revealing the propensity score, the features behind it or raw personal data. Covered by operational boundaries and the disclosure test scenarios.</p></template>
       <template data-for="c2"><p><b>Direct prompt injection and data exfiltration attempt.</b> Blocked by the input sanitisation layer. Strict session isolation means no other customer's data is reachable anyway. Logged as a security event.</p></template>
       <template data-for="c3"><p><b>Out-of-scope question about internal practices.</b> The agent deflects without giving any information. Segmentation logic and pricing are confidential business information.</p></template>
-      <template data-for="c4"><p><b>Out-of-scope and potentially harmful.</b> The agent gives no medical, legal or claims advice. Forced answers outside its expertise raise hallucination and bias risk. It redirects politely, and an escalation trigger may hand over to a human channel.</p></template>
+      <template data-for="c4"><p><b>Out-of-scope and potentially harmful.</b> The agent gives no medical, legal or claims advice. Forced answers outside its expertise raise hallucination and bias risk. It declines politely. If the exchange keeps pushing out of scope, an escalation trigger can end it gracefully and point the customer to other support channels.</p></template>
       <template data-for="c5"><p><b>Multi-turn ("Crescendo") probing.</b> Each step looks harmless, but together they push the agent towards revealing what it would refuse if asked directly. Test multi-turn scenarios specifically. The output guardrails check every turn for direct or indirect disclosure of sensitive factors.</p></template>
     </div>
   </section>
@@ -2475,30 +2485,37 @@ pre.out { white-space: pre-wrap; word-break: break-word; font-family: var(--f-mo
 
   <div class="figure wide">
     <div class="arch">
-      <div class="zone"><span class="z-label">Underwriter</span>
-        <div class="box human"><b>Underwriter</b>Holds full decision authority; can override or escalate at any stage</div>
-        <div class="box guard"><b>RBAC</b>Secured, controlled access</div>
-        <div class="box human"><b>Decision recorded</b>Approve, decline or refer, in the system of record; overrides documented</div>
+      <div class="zone"><span class="z-label">Request and decision</span>
+        <div class="box"><b>Underwriter request</b></div>
+        <div class="box guard"><b>Sanitisation</b></div>
+        <div class="box guard"><b>LLM-as-a-judge check control</b>Tool use and reasoning consistent with inputs</div>
+        <div class="box"><b>Output analysis for the underwriter</b>Recommendation, explanation, visuals</div>
+        <div class="box guard"><b>Verification by the underwriter</b>Can override or escalate at any stage</div>
+        <div class="box"><b>Underwriting decision from the underwriter</b>Recorded in the system of record</div>
       </div>
       <div class="zone"><span class="z-label">Agent</span>
-        <div class="box core"><b>Underwriting agent</b>Coordinates retrieval, tools and synthesis</div>
-        <div class="box"><b>External LLM API</b></div>
+        <div class="box core"><b>Agentic architecture</b>Coordinates retrieval, tools and synthesis</div>
+        <div class="box"><b>LLM API</b></div>
         <div class="box guard"><b>Third-party controls</b></div>
-        <div class="box guard"><b>Data minimisation at the LLM layer</b>Only what the recommendation needs</div>
-        <div class="box"><b>Memory database</b>Session information</div>
-        <div class="box guard"><b>Monitoring check; context cleared between applicants</b></div>
-        <div class="box guard"><b>LLM-as-a-judge checks</b>Tool use and reasoning consistent with inputs</div>
+        <div class="box guard"><b>Data minimisation at the LLM layer *</b>Only what the recommendation needs; context cleared between applicants</div>
+        <div class="box"><b>Memory database</b></div>
+        <div class="box guard"><b>Monitoring check</b></div>
+        <div class="box guard"><b>Logging interactions</b>Into log files, themselves under a monitoring check</div>
+        <div class="box guard"><b>RBAC *</b></div>
       </div>
-      <div class="zone"><span class="z-label">Data and tools via MCP</span>
-        <div class="box guard"><b>Secure data transfer and access controls</b></div>
-        <div class="box"><b>RAG over applicant data and medical records</b></div>
-        <div class="box"><b>Scoring model</b>Risk or acceptance probability; validated separately</div>
+      <div class="zone"><span class="z-label">Tools and data</span>
+        <div class="box guard"><b>MCP access control</b></div>
+        <div class="box"><b>Scoring</b>Risk or acceptance probability; validated separately</div>
         <div class="box"><b>Interpretability toolbox</b>Factors behind the score</div>
         <div class="box"><b>Graphic tool</b>Visuals of key risk factors for declines</div>
+        <div class="box guard"><b>Data access control</b></div>
+        <div class="box"><b>RAG with extracted data</b></div>
+        <div class="box guard"><b>Secure data transfer</b></div>
+        <div class="box"><b>Applicant data and medical records</b></div>
       </div>
     </div>
-    <div class="legend"><span class="lg-core">Agent core</span><span class="lg-plain">Component</span><span class="lg-guard">Safeguard</span><span class="lg-human">Human oversight</span></div>
-    <p class="fig-cap">Reconstructed from §6.3.1 and the safeguards in §6.3.2. The report's own diagram is Figure 14.</p>
+    <div class="legend"><span class="lg-core">Agent core</span><span class="lg-plain">Component or data</span><span class="lg-guard">Safeguard</span></div>
+    <p class="fig-cap">Simplified from Figure 14 of the report, where safeguards appear in red. Items marked * are described in the text (§6.3.2.2.2) but not drawn in the figure.</p>
   </div>
 
   <h2>11.2 The checklist, phase by phase</h2>
@@ -2690,7 +2707,7 @@ pre.out { white-space: pre-wrap; word-break: break-word; font-family: var(--f-mo
     <li>It is an independent educational adaptation. It is not produced, reviewed or endorsed by the Society of Actuaries or the report's authors.</li>
     <li>Content paraphrases and summarises the report, with section references (§) so you can check the original. Short quotations are marked as such.</li>
     <li>The purple "Reinsurance lens" boxes, the exercises and their sample data (such as the treaty clause in Module 8 and the risk matrix in Module 7) are the trainer's additions. They are not in the report.</li>
-    <li>Architecture diagrams in the case studies are reconstructed from the report's text, not copied from its figures.</li>
+    <li>The interaction matrix and the case-study architecture diagrams are simplified redrawings of the report's figures. Safeguards that the report describes only in its text are marked with an asterisk.</li>
     <li>Nothing here is legal advice. The report itself stresses that its examples are illustrative and that applicable law must be assessed case by case with counsel.</li>
   </ul>
   <p>The report reflects regulation and technology as of its writing. Like the report, treat this material as a foundation to build on, not a static rulebook.</p>
@@ -2820,7 +2837,7 @@ const QUIZZES = {
       o: ["90 instead of 21", "21 instead of 90", "15 instead of 6", "The same number"],
       a: 1, e: "Without a standard protocol you need M × N = 90 integrations. With MCP each agent and each tool implements the protocol once: M + N = 21. (§5.2.5)" },
     { q: "According to the research the report cites, which architecture suits a strictly sequential task such as planning?",
-      o: ["Centralized multi-agent", "Decentralized multi-agent", "Single agent", "Independent multi-agent with majority voting"],
+      o: ["Centralized multi-agent", "Decentralized multi-agent", "Single agent", "Independent multi-agent with an aggregator"],
       a: 2, e: "For sequential tasks, multi-agent decomposition tends to waste the token budget on coordination, so a single agent is preferred. (§5.2.4.3, Figure 6)" },
     { q: "What is the main risk the report highlights for fine-tuning?",
       o: ["Prompt sensitivity", "Catastrophic forgetting of general capabilities", "Higher latency of retrieval", "It cannot be combined with prompts"],
@@ -3522,9 +3539,9 @@ const CHECKLIST = [
   /* ---------- Exercise: oversight matrix ---------- */
   function initOversight(root) {
     const cases = {
-      R: { x: 50, y: 78, name: "Actuarial reporting", text: "<b>Agent-led, human in/on the loop.</b> Complex, multi-step synthesis of confidential financial data. Outputs feed regulatory and management reports, so actuaries validate intermediate steps and approve the final presentation." },
-      M: { x: 26, y: 48, name: "Marketing chatbot", text: "<b>Agent-led, human out of the loop.</b> Real-time conversation rules out case-by-case review. Stakes are lower than underwriting as long as the system personalises rather than decides, so automated guardrails and monitoring carry the load." },
-      U: { x: 80, y: 66, name: "Underwriting support", text: "<b>Human-led, agent support.</b> Decisions affect access to life cover and are tightly regulated. The agent recommends and explains; the underwriter decides every case." }
+      R: { x: 9, y: 69, name: "Actuarial reporting", text: "<b>Agentic workflow, human in and on the loop.</b> Placed at the lower-risk end, since it makes no decisions about individual customers, but high on complexity: a multi-step synthesis of data, models and narrative. Actuaries validate intermediate steps and approve the final presentation." },
+      M: { x: 9, y: 39, name: "Marketing chatbot", text: "<b>Agentic workflow, human out of the loop.</b> Lower stakes as long as the system personalises rather than decides, and moderate complexity. Real-time conversation rules out case-by-case review, so automated guardrails and monitoring carry the load." },
+      U: { x: 69, y: 62, name: "Underwriting support", text: "<b>Human-led with AI agent support.</b> Higher stakes: decisions affect access to life cover and are tightly regulated. The agent recommends and explains; the underwriter decides every case." }
     };
     const mx = $(".matrix", root), info = $("[data-info]", root);
     Object.entries(cases).forEach(([k, c]) => {
@@ -3548,14 +3565,19 @@ const CHECKLIST = [
       const r = +rs.value, c = +cs.value;
       $("#ov-risk-o", root).textContent = labels[r - 1];
       $("#ov-cx-o", root).textContent = labels[c - 1];
-      you.style.left = (r - 1) * 22 + 6 + "%"; you.style.bottom = (c - 1) * 22 + 6 + "%";
+      // Positions on the same 0-100 scale as the zones drawn in the page.
+      const x = [8, 30, 48, 70, 92][r - 1], y = [10, 35, 59, 75, 92][c - 1];
+      you.style.left = x + "%"; you.style.bottom = y + "%";
       let mode, why;
-      if (r === 5) { mode = "Consider a human-only process, or human-led with agent support"; why = "At the highest stakes the report suggests human-only processes can be considered."; }
-      else if (r === 4) { mode = "Human-led with agent support (or agent-led with strict human-in-the-loop sign-off)"; why = "High stakes call for a human decision-maker and explicit approval before consequential actions."; }
-      else if (r === 3) { mode = "Agent-led with human-in-the-loop or human-on-the-loop"; why = "Moderate stakes: humans validate key steps or monitor and sample outputs, with the power to intervene."; }
-      else { mode = "Agent-led; human-on-the-loop or, with strong automated controls, human-out-of-the-loop"; why = "Lower stakes allow more autonomy, but automated guardrails, monitoring and periodic review must compensate."; }
-      const cx = c >= 4 ? " Because the task is complex, add stronger human checkpoints: native LLM and agent capabilities are most reliable over short reasoning steps." : "";
-      out.innerHTML = `<p><b>${mode}.</b></p><p class="small muted">${why}${cx}</p>`;
+      if (x >= 84) { mode = "Human only"; why = "At the highest stakes, the report suggests keeping the process human only."; }
+      else if (x >= 55) {
+        if (y >= 43) { mode = "Human-led with AI agent support"; why = "High stakes keep a human as decision-maker. For a complex task, an agent can retrieve, calculate and draft, as in the underwriting case."; }
+        else { mode = "Human-led with automation support"; why = "High stakes keep a human as decision-maker. For a simpler task, conventional automation can support them."; }
+      } else if (y >= 69) { mode = "Agentic workflow, human in the loop"; why = "Stakes allow an agent to lead, but a complex goal needs explicit human approval at key steps."; }
+      else if (y >= 49) { mode = "Agentic workflow, human on the loop"; why = "The agent runs the workflow; humans monitor, sample outputs and can intervene."; }
+      else if (y >= 21) { mode = "Agentic workflow, human out of the loop"; why = "Lower stakes and moderate complexity: automated guardrails, monitoring and periodic system-level review carry the oversight."; }
+      else { mode = "Traditional automation"; why = "A simple, low-stakes task may not need an agent at all: rules-based automation can be enough."; }
+      out.innerHTML = `<p><b>${mode}.</b></p><p class="small muted">${why}</p>`;
     }
     rs.addEventListener("input", upd); cs.addEventListener("input", upd); upd();
   }

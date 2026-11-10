@@ -1,0 +1,179 @@
+<section class="page" id="page-m9" aria-labelledby="m9-title" hidden>
+  <div class="mod-head">
+    <h1 id="m9-title">Case 1: Actuarial reporting agent</h1>
+    <p class="lede">An AI agent drafts the first version of an actuarial or financial report: it pulls data, runs the cash-flow model, writes the narrative and builds the slides. Actuaries validate along the way and sign off at the end. This case shows the full checklist applied to an internal, agent-led system with high-impact outputs.</p>
+  </div>
+
+  <div class="objectives">
+    <h2>By the end of this module you can</h2>
+    <ul>
+      <li>Describe the system's architecture and where its safeguards sit.</li>
+      <li>Identify its main risks across data, system and output.</li>
+      <li>Design human-in- and on-the-loop oversight with escalation triggers.</li>
+      <li>Plan an evaluation covering grounding, reasoning, consistency, bias and robustness.</li>
+      <li>Handle a provider's model update as a governed change.</li>
+    </ul>
+  </div>
+
+  <h2>9.1 The system</h2>
+  <div class="grid g4">
+    <div class="card"><span class="tag">Workflow</span><p>Agent-led, human support</p></div>
+    <div class="card"><span class="tag">Oversight</span><p>Human in and on the loop</p></div>
+    <div class="card"><span class="tag">Data</span><p>Confidential enterprise financial data</p></div>
+    <div class="card"><span class="tag">Audience of output</span><p>Management, board, regulators</p></div>
+  </div>
+  <p>The actuary asks for a report "as of" a date (for example year-end 2025), points to the relevant data (model point files, economic scenarios) and, if needed, updates the prescribed presentation template, which says what to produce and how to format it. The interaction is deliberately <strong>not open-ended</strong>. Inputs include cash-flow model assumptions (economic and non-economic), scenario files, model outputs, model change documentation and previous reports. The system is for internal reporting and preparation only: it makes no consumer-facing underwriting, pricing, claims or marketing decisions.</p>
+
+  <div class="figure wide">
+    <div class="arch">
+      <div class="zone"><span class="z-label">User and oversight</span>
+        <div class="box human"><b>Actuary</b>Validates intermediate steps (in the loop), monitors progress and approves the final deck (on the loop)</div>
+        <div class="box guard"><b>RBAC</b>Identity and permission check on every request</div>
+        <div class="box guard"><b>Input validation</b>Data schemas, type checks; malformed input rejected</div>
+        <div class="box human"><b>Review and approval</b>Numerical accuracy, actuarial analysis, compliant language, consistency across slides</div>
+      </div>
+      <div class="zone"><span class="z-label">Agent</span>
+        <div class="box core"><b>AI orchestrator agent</b>Decides which data and tools to use, in which order, and builds the report</div>
+        <div class="box"><b>External LLM API</b>Reasoning and generation</div>
+        <div class="box guard"><b>Third-party controls</b>Vendor due diligence, contracts, version monitoring</div>
+        <div class="box"><b>Memory database</b>Structured outputs, draft narratives, session summaries</div>
+        <div class="box guard"><b>Retention policy and monitoring check</b></div>
+        <div class="box guard"><b>Logging of reasoning (CoT or ReAct), tool calls, outputs</b></div>
+        <div class="box guard"><b>Output guardrails</b>Leakage check, JSON grounding, escalation triggers</div>
+      </div>
+      <div class="zone"><span class="z-label">Data and tools</span>
+        <div class="box"><b>Company financial data</b>Financial statements, policy data</div>
+        <div class="box"><b>External economic data</b>Market indicators, economic scenarios</div>
+        <div class="box guard"><b>Secure data transfer</b></div>
+        <div class="box guard"><b>MCP layer with access controls</b>Only predefined, validated tools</div>
+        <div class="box"><b>Cash-flow projection model</b>Balance sheet over scenarios (validated separately)</div>
+        <div class="box"><b>Pre-approved presentation templates</b></div>
+      </div>
+    </div>
+    <div class="legend"><span class="lg-core">Agent core</span><span class="lg-plain">Component</span><span class="lg-guard">Safeguard</span><span class="lg-human">Human oversight</span></div>
+    <p class="fig-cap">Reconstructed from the description in §6.1.1.2 and the safeguards discussed in §6.1.2. The report's own diagram is Figure 12.</p>
+  </div>
+
+  <h3>Who is accountable</h3>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Team</th><th>Accountable for</th></tr></thead>
+      <tbody>
+        <tr><td>Actuarial team</td><td>Business owner; the reports produced</td></tr>
+        <tr><td>Actuarial and data science teams</td><td>The underlying actuarial model and the tools the agent uses</td></tr>
+        <tr><td>IT and engineering</td><td>Architecture, integration, deployment, infrastructure and security</td></tr>
+        <tr><td>Legal</td><td>Applicable legal and regulatory requirements</td></tr>
+        <tr><td>Risk management</td><td>Independent challenge: model risk governance and operational risk monitoring</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>9.2 The checklist, phase by phase</h2>
+  <div class="tabs wide">
+    <div class="tab-list">
+      <button type="button">Planning</button>
+      <button type="button">Design</button>
+      <button type="button">Development</button>
+      <button type="button">Deployment</button>
+    </div>
+
+    <div class="tab-panel">
+      <h4>Purpose and scope</h4>
+      <p>Automate regulatory, technical and management reports with narrative explanations based on actuarial reasoning, using data from several sources. Involve the actuaries who used to do the work in managing and overseeing the system, to keep professional standards up.</p>
+      <h4>Possibly relevant rules</h4>
+      <p>With counsel: trade secret law, confidentiality obligations, internal governance policies, and possibly the NAIC Model Bulletin. The system does not aim to process consumer data, but <strong>logs</strong> (user IDs, IP addresses, session metadata) may be personal information under state laws such as the CCPA. The foundation LLM brings a third-party dependency, so vendor due diligence is needed.</p>
+      <h4>Preliminary risk assessment</h4>
+      <div class="grid g3">
+        <div class="card red"><span class="tag">Data</span><p>Leakage of confidential financial data or proprietary methodologies to external systems could damage competitive position.</p></div>
+        <div class="card red"><span class="tag">System</span><p>The agent may misuse tools (wrong parameters, misread outputs), act out of scope, skip a necessary step or run steps in the wrong order. Errors compound across steps. The provider adds outages, unannounced model updates and data handling that may not match your confidentiality needs.</p></div>
+        <div class="card red"><span class="tag">Output</span><p>The biggest operational risk: wrong assumptions, figures or narrative that mislead the reviewer, then stakeholders and regulators, with possible effects on solvency and compliance. Also hallucinations, weak robustness, reasoning errors and bias in how facts are described.</p></div>
+      </div>
+      <p><strong>Primary risk drivers:</strong> data confidentiality and report accuracy. For illustration, the report assumes there are no deal breakers. The initial mitigation strategy: constrained user interaction, restricted tool access and monitored execution for input and system risks; access controls, controlled transfers and logging for data; mandatory expert review for outputs. Robust model risk management (validation, testing, monitoring) underpins it all.</p>
+    </div>
+
+    <div class="tab-panel">
+      <h4>Safety and security</h4>
+      <ul>
+        <li><strong>RBAC</strong> for access to the system and its confidential outputs.</li>
+        <li><strong>Input validation and type safety:</strong> formal data schemas (required fields, types, valid ranges) checked by a validation framework. Anything malformed is rejected before it reaches the LLM.</li>
+        <li><strong>Output safety:</strong> guardrails check that raw figures that should stay aggregated, or internal methodology details, do not appear in external-facing reports.</li>
+        <li><strong>Faithfulness by structure:</strong> the agent writes the data it uses into JSON (e.g., <code>"loss_ratio": 0.75, "reporting_period": "Q3 2025"</code>) so that each element can be verified.</li>
+        <li><strong>System checks:</strong> least privilege (only predefined, validated data and tools), action logging, and a memory retention policy with a check that memory does not grow into a progressively enriched profile.</li>
+        <li><strong>Third-party controls</strong> for the LLM API. Their depth depends on internal versus external hosting.</li>
+      </ul>
+      <h4>Interpretability, traceability and transparency</h4>
+      <ul>
+        <li>Log every step: prompts, model versions, retrieved content, tool calls, intermediate and final outputs. Set a log retention period, and keep personal or confidential data in logs to what audit needs.</li>
+        <li>Use ReAct or Chain-of-Thought and keep the reasoning in a "hidden scratchpad" log so reviewers can follow each step.</li>
+        <li>Document known limits: non-determinism, possible hallucinated narrative, data flow constraints.</li>
+        <li><strong>Transparency-by-design</strong> here means making the system's flows visible (inputs, processing steps, outputs), not making the LLM itself transparent.</li>
+        <li>Disclose to report recipients that AI assisted (data synthesis, narrative generation) and what oversight applies.</li>
+      </ul>
+      <h4>Human oversight and escalation</h4>
+      <div class="grid g2">
+        <div class="card teal"><span class="tag">In the loop</span><p>The actuary checks intermediate steps, such as extraction results or draft narrative, before the agent moves on, so errors are caught before they spread.</p></div>
+        <div class="card teal"><span class="tag">On the loop</span><p>The actuary follows completion and approves the final presentation, checking numerical accuracy, the analysis, compliant language and consistency across slides.</p></div>
+      </div>
+      <p><strong>Escalation triggers.</strong> At data level: missing values, unusual patterns or JSON that fails schema validation stop the agent. At agent level: attempts to reach out-of-scope data, or excessive reasoning iterations without converging, raise an alert. The system then halts and escalates rather than producing a misleading narrative. It must be possible to <strong>suspend</strong> it immediately if a systemic issue appears and to fall back to the fully manual process.</p>
+      <h4>Evaluation plan</h4>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Risk</th><th>Evaluation</th></tr></thead>
+          <tbody>
+            <tr><td>Hallucination</td><td>Two-level check, possibly with LLM-as-a-judge: every figure maps to a JSON field, and every JSON field traces to a source.</td></tr>
+            <tr><td>Reasoning quality</td><td>LLM-as-a-judge on the recorded CoT or ReAct steps, supervised by actuaries. A <strong>structured cloze test</strong> on validated reports masks directional words, severity qualifiers or actuarial concepts (and, at a harder level, whole analytical paragraphs) for the model to fill in.</td></tr>
+            <tr><td>Consistency</td><td>A benchmark of previously validated reports, used before go-live and later to detect drift after LLM or data changes.</td></tr>
+            <tr><td>Bias</td><td>No individual customer decisions, but watch narrative tone and selective emphasis, such as systematically downplaying adverse trends. Experts review a sample across data scenarios.</td></tr>
+            <tr><td>Robustness</td><td>Same input several times; minor input changes should leave the report unchanged, significant changes should move it proportionately. Compare figures and conclusions with a gold standard, and use reasoning logs to locate any divergence.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>The actuarial expert remains responsible for the qualitative assessment. It requires professional judgment beyond data-to-text verification and cannot be fully automated.</p>
+      <h4>Data governance</h4>
+      <p>The data flow is mapped hop by hop. Requests are held in session memory only. Data is retrieved through MCP from the company database, which stays the only authoritative store of raw data. With an internally hosted LLM, prompts stay inside the network, inference runs in ephemeral memory and training on the data is disabled. With an external LLM, prompts leave over encrypted HTTPS/TLS. The memory database is the only persistent AI-side store. Logs go to separate systems (SIEM, audit, WORM archives). The approved report is stored after human review. The provenance of every source (origin, version, extraction date) and every transformation is logged at the start of each session.</p>
+    </div>
+
+    <div class="tab-panel">
+      <ul>
+        <li><strong>Documentation</strong> is kept current: choices, tests, risks and steps, so that stakeholders and auditors can follow the process.</li>
+        <li><strong>Safety tests:</strong> confirm the agent cannot reach data or tools outside its perimeter and calls validated tools with correct parameters. Check that intermediate steps are formatted for review and that actuaries can actually halt or override the process.</li>
+        <li><strong>Data:</strong> document the origin, meaning and transformation history of each source, so that any statement in a report traces to a JSON value and then to its source system. Make collection deterministic, logged and reproducible. Treat any change (a new source, a renamed field, new aggregation logic) as a trigger for revalidation. Version the data schemas, JSON templates and actuarial model.</li>
+        <li><strong>Model development:</strong> document the prompt strategy, orchestration logic, tool definitions and calling conditions, ReAct or CoT configuration and output rules. The actuarial model used as a tool is documented separately.</li>
+        <li><strong>Testing:</strong> for each evaluation, record scope, criteria and acceptance thresholds, quantitative results, issues found and corrective actions, in enough detail for independent review.</li>
+        <li><strong>Validation:</strong> a formal exercise confirms the accuracy and safety thresholds and complete documentation before deployment.</li>
+      </ul>
+    </div>
+
+    <div class="tab-panel">
+      <ul>
+        <li><strong>Controlled release:</strong> version and package the full configuration (LLM version, system prompts, orchestration logic, MCP connectors, JSON schema) as a reproducible release, so future changes can be tracked against it.</li>
+        <li><strong>Integration checks</strong> in a production-like environment: RBAC enforced, tool calls behave as expected, the logging pipeline has no gaps, and unit tests against previously validated reports pass.</li>
+        <li><strong>Internal transparency:</strong> recipients know the reports are AI-assisted, how, under what oversight and with which limits. Record this in the system card.</li>
+        <li><strong>Monitoring:</strong> API latency, error rates, tool call failures, logging completeness. Periodic red teaming, in which actuaries or security specialists deliberately try to trigger failures.</li>
+        <li><strong>Drift and feedback:</strong> compare reports over time for changes in tone or quality. Collect and log actuaries' feedback to refine evaluation criteria and thresholds. Over time this corpus also helps train new reviewers.</li>
+        <li><strong>Retention:</strong> a policy for structured inputs, intermediate outputs, reasoning logs and final reports.</li>
+      </ul>
+      <div class="callout key">
+        <span class="c-label">When the provider ships a new model</span>
+        <p>Assess the new version against internal governance guidelines first. Treat its adoption as a <strong>material change</strong>: go back through the Development phase. Approve it only if it passes all benchmark tests with no degradation, and update the documentation before redeploying.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout reins">
+    <span class="c-label">Reinsurance lens · trainer's note</span>
+    <p>The same design transfers to reinsurance reporting: quarterly technical accounts, Solvency II narrative reporting, or portfolio reviews of ceded business. Cedent data under treaty confidentiality makes the output leakage guardrails and the third-party controls on the LLM provider especially important.</p>
+  </div>
+
+  <div class="quiz" data-quiz="m9"></div>
+
+  <div class="takeaways">
+    <h2>Key takeaways</h2>
+    <ul>
+      <li>Constrain the interaction, limit tools to validated ones through MCP, and log every step.</li>
+      <li>Structured JSON makes a narrative report verifiable, figure by figure, back to its source.</li>
+      <li>Combine in-the-loop checks on intermediate steps with on-the-loop approval of the final output, and define when the agent must stop.</li>
+      <li>Treat provider model updates as material changes that require revalidation.</li>
+    </ul>
+  </div>
+</section>

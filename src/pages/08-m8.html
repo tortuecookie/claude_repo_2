@@ -1,0 +1,179 @@
+<section class="page" id="page-m8" aria-labelledby="m8-title" hidden>
+  <div class="mod-head">
+    <h1 id="m8-title">Validation and explainability</h1>
+    <p class="lede">How do you validate a model whose output is a paragraph rather than a number, and explain a system whose inner workings no one can read? This module brings together the techniques the report proposes: LLM-as-a-judge, RAGAS metrics, a toolbox of practical tests, and a four-part explainability matrix.</p>
+  </div>
+
+  <div class="objectives">
+    <h2>By the end of this module you can</h2>
+    <ul>
+      <li>Set up an LLM-as-a-judge evaluation and name its three typical biases.</li>
+      <li>Compute and interpret RAGAS faithfulness, answer relevance and context relevance.</li>
+      <li>Choose practical tests for accuracy, robustness, consistency and disclosure risk.</li>
+      <li>Classify explainability methods by scope (local or global) and focus (why or how).</li>
+      <li>Explain what alignment faking is and why it calls for careful testing.</li>
+    </ul>
+  </div>
+
+  <h2>8.1 LLM-as-a-judge</h2>
+  <p>Human review of every output is slow and expensive. <strong>LLM-as-a-judge</strong> uses one LLM to evaluate another's outputs at scale. It works for conversational agents, RAG pipelines and agentic workflows. Three design choices matter: the evaluation task, the evaluator model, and how you manage its weaknesses.</p>
+
+  <div class="tabs">
+    <div class="tab-list">
+      <button type="button">Direct assessment</button>
+      <button type="button">Pairwise comparison</button>
+      <button type="button">Choosing the judge</button>
+    </div>
+    <div class="tab-panel">
+      <div class="grid g2">
+        <div class="card"><h4>Without a reference</h4><p>The judge scores quality on its own terms: binary (yes/no), discrete (1–5) or continuous. For a model that drafts replies to policyholder emails, it might score clarity, tone and factual accuracy separately. Useful when no ground truth exists, which is common in generative tasks.</p></div>
+        <div class="card"><h4>With a reference</h4><p>The judge receives the prompt, the model's answer and a "golden" reference answer. Closed questions (e.g., multiple choice) reduce to exact matching. Open questions need semantic comparison, helped by NLP metrics such as ROUGE and BLEU. Good for benchmarking and regression tests, but it can penalise valid alternative wording and needs high-quality references.</p></div>
+      </div>
+    </div>
+    <div class="tab-panel">
+      <p>The judge picks the better of two outputs, or ranks several, against set criteria. Typical use: comparing configurations, such as two versions of a system prompt for claims summaries, to see which gives more accurate and concise results.</p>
+    </div>
+    <div class="tab-panel">
+      <div class="grid g2">
+        <div class="card"><h4>General-purpose LLM</h4><p>Off-the-shelf and easy to deploy, with broad reasoning. Good for fluency, relevance and logical coherence.</p></div>
+        <div class="card"><h4>Fine-tuned judge</h4><p>Trained on evaluation data for a domain. More accurate on specialised points such as actuarial terminology or regulatory compliance issues a generalist might miss.</p></div>
+      </div>
+      <p>The trade-off is ease of deployment against domain precision.</p>
+    </div>
+  </div>
+
+  <div class="grid g3">
+    <div class="card amber"><span class="tag">Bias</span><h4>Verbosity</h4><p>Favours longer answers, equating length with quality.</p></div>
+    <div class="card amber"><span class="tag">Bias</span><h4>Self-enhancement</h4><p>Rates outputs from its own foundation model more favourably.</p></div>
+    <div class="card amber"><span class="tag">Bias</span><h4>Positional</h4><p>In pairwise comparisons, systematically prefers the first (or last) answer shown.</p></div>
+  </div>
+  <div class="callout key">
+    <span class="c-label">Keep the expert in charge</span>
+    <p>The judge is scalable and flexible, and can give nuanced assessments. But it should itself be evaluated, supervised by actuarial experts, and its methodology and limits documented. The expert stays responsible for the qualitative judgment, which cannot be fully automated <span class="ref">§6.1.2.2.3</span>.</p>
+  </div>
+
+  <h2>8.2 Evaluating RAG with RAGAS</h2>
+  <p>RAGAS (Retrieval-Augmented Generation Assessment) scores a RAG system on several dimensions, using an external LLM to automate the work.</p>
+  <div class="grid g3">
+    <div class="card navy"><h4>Faithfulness</h4><p>Break the answer into statements and check each against the retrieved context. Score = supported statements ÷ total statements.</p></div>
+    <div class="card navy"><h4>Answer relevance</h4><p>Have an LLM generate questions from the answer, then measure their average similarity to the original question.</p></div>
+    <div class="card navy"><h4>Context relevance</h4><p>Have an LLM extract the sentences of the context that are needed to answer. Score = needed sentences ÷ all sentences. Penalises redundant retrieval.</p></div>
+  </div>
+
+  <section class="exercise wide" data-x="ragas">
+    <header><span class="x-tag">Exercise</span><h3>Score the faithfulness of a RAG answer</h3></header>
+    <div class="x-body">
+      <p>A broker asks a treaty assistant: <em>"Does the 2026 property cat treaty cover flood in Germany?"</em> The retrieved clause reads: <em>"Covered perils: windstorm, hail, earthquake and flood, including storm surge. Territorial scope: EEA and Switzerland. Hours clause: 72 hours for windstorm and 168 hours for flood and earthquake."</em> Tick each statement in the answer that the clause supports.</p>
+      <div class="stack">
+        <label class="ck-item"><input type="checkbox" id="rg-1"><span>Flood is a covered peril.</span></label>
+        <label class="ck-item"><input type="checkbox" id="rg-2"><span>Germany is within the territorial scope.</span></label>
+        <label class="ck-item"><input type="checkbox" id="rg-3"><span>Storm surge is included in flood cover.</span></label>
+        <label class="ck-item"><input type="checkbox" id="rg-4"><span>The hours clause for flood is 168 hours.</span></label>
+        <label class="ck-item"><input type="checkbox" id="rg-5"><span>The retention for flood is EUR 25 million.</span></label>
+        <label class="ck-item"><input type="checkbox" id="rg-6"><span>Flood claims must be notified within 30 days.</span></label>
+      </div>
+      <div class="grid g2" style="margin:14px 0 0">
+        <div class="card"><span class="tag">Faithfulness</span><span class="kpi" data-faith></span><p class="small muted" data-faith-n></p></div>
+        <div class="card"><span class="tag">What it tells you</span><p class="small">The first four statements are supported (Germany is in the EEA). The retention and notification period appear nowhere in the context: they may be true, but they are not grounded. A correct score here is 4/6 ≈ 0.67, and an answer like this should be flagged before a broker relies on it.</p></div>
+      </div>
+      <p class="small muted">Illustrative treaty wording invented for this exercise.</p>
+    </div>
+  </section>
+  <p>Evaluating RAG, and GenAI more generally, is still an active research area. Recent work also asks whether RAG itself can introduce unfairness.</p>
+
+  <h2>8.3 A practical validation toolbox</h2>
+  <p>The case studies add concrete tests that do not depend on a judge model. Pick according to the risk and the type of output.</p>
+  <div class="tbl-wrap wide">
+    <table>
+      <thead><tr><th>Test</th><th>How it works</th><th>Catches</th><th>Used in</th></tr></thead>
+      <tbody>
+        <tr><td>Two-level grounding check</td><td>Every figure in the output maps to a field in structured JSON; every JSON field maps to a source system</td><td>Hallucinated or mistranscribed figures</td><td>Reporting</td></tr>
+        <tr><td>Structured cloze test</td><td>Mask words such as "increased/decreased/stable" or "material/negligible" in validated reports; the model picks from a list</td><td>Wrong direction, magnitude or significance</td><td>Reporting</td></tr>
+        <tr><td>Reference benchmark</td><td>Compare outputs with previously validated reports or interactions</td><td>Deviations in content, interpretation, tone; drift after updates</td><td>All three</td></tr>
+        <tr><td>Repeat-run stability</td><td>Run the same input several times and compare</td><td>Non-determinism that changes conclusions</td><td>All three</td></tr>
+        <tr><td>Perturbation test</td><td>Small input changes should not change the result; significant changes should, proportionately</td><td>Brittleness or insensitivity</td><td>Reporting, underwriting</td></tr>
+        <tr><td>Prompt sensitivity test</td><td>Ask semantically equivalent questions in different words</td><td>Inconsistent treatment of similar cases</td><td>Chatbot, underwriting</td></tr>
+        <tr><td>Synthetic profiles</td><td>Run the system on profiles that differ only in sensitive attributes</td><td>Steering, tone or persuasion differences between groups</td><td>Chatbot</td></tr>
+        <tr><td>Disclosure scenarios</td><td>Direct questions, indirect probes and injection attempts about sensitive factors</td><td>Leakage of scores or protected attributes</td><td>Chatbot</td></tr>
+        <tr><td>Expert sample review</td><td>Experts review a representative sample across output types and profiles</td><td>Reasoning errors, guideline breaches, subtle bias</td><td>All three</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="callout practice">
+    <span class="c-label">Use an LLM to scale the test sets, then check them</span>
+    <p>Starting from a handful of expert-designed cases, an LLM can generate variants (alternative data scenarios, rephrased questions). The expert reviews and validates them before use <span class="ref">§6.1.2.2.3</span>.</p>
+  </div>
+
+  <h2>8.4 Explainability</h2>
+  <p>Three related ideas from the machine learning literature:</p>
+  <ul>
+    <li><strong>Transparency</strong> is structural: the model can be simulated, decomposed and analysed. GenAI models are not inherently transparent.</li>
+    <li><strong>Interpretability</strong> follows from transparency: you can analyse the input-output relationship directly, as with regression coefficients. GenAI models are hard to interpret.</li>
+    <li><strong>Explainability</strong> produces <em>post hoc</em> explanations of a non-transparent model with auxiliary methods. It can be <em>local</em> (one output) or <em>global</em> (overall behaviour).</li>
+  </ul>
+  <p>LLMs make this hard: they are complex, sometimes closed-weight, and probabilistic, so the same question can produce different answers depending on wording or context. The report proposes a matrix that crosses <strong>scope</strong> (local or global) with <strong>focus</strong> (why the outcome, or how the process).</p>
+
+  <section class="exercise wide" data-picker>
+    <header><span class="x-tag">Explore</span><h3>The explainability matrix</h3></header>
+    <div class="x-body">
+      <p>Select a quadrant to see its methods and an insurance example.</p>
+      <div class="xm">
+        <div></div><div class="ax">LOCAL · one output</div><div class="ax">GLOBAL · system behaviour</div>
+        <div class="ax">WHY<br>outcome</div>
+        <button type="button" data-pick="lw"><b>Local why</b>Justify one specific answer</button>
+        <button type="button" data-pick="gw"><b>Global why</b>Reveal core principles and biases</button>
+        <div class="ax">HOW<br>process</div>
+        <button type="button" data-pick="lh"><b>Local how</b>Show the reasoning for one task</button>
+        <button type="button" data-pick="gh"><b>Global how</b>Reveal overall skills and limits</button>
+      </div>
+      <div class="detail-panel" data-pick-out aria-live="polite"></div>
+      <template data-for="lw">
+        <ul>
+          <li><strong>Self-explanation:</strong> ask the model to justify its conclusion. If an underwriting assistant recommends a decline, have it state which risk factors led there.</li>
+          <li><strong>Source attribution:</strong> in RAG, cite the exact documents or passages behind the answer, giving a verifiable chain of evidence.</li>
+          <li><strong>Input attribution:</strong> ask which words of the prompt most influenced the answer. Useful for detecting prompt sensitivity.</li>
+        </ul>
+      </template>
+      <template data-for="lh">
+        <ul>
+          <li><strong>Chain-of-Thought:</strong> the model writes its reasoning steps before answering. Reported to improve accuracy and interpretability on arithmetic, logic and multi-step tasks for large models (at least 100B parameters), and it helps debugging.</li>
+          <li><strong>ReAct simulation:</strong> the model states which tools it would use and which actions it would take, following the Reason-Act pattern.</li>
+        </ul>
+      </template>
+      <template data-for="gw">
+        <ul>
+          <li><strong>Persona-based bias probing:</strong> ask the same question while the model adopts different personas and compare. Relevant where differential treatment across groups raises compliance issues.</li>
+          <li><strong>Value-conflict scenarios:</strong> pose dilemmas where principles clash, such as minimising claim costs versus treating vulnerable policyholders fairly.</li>
+        </ul>
+      </template>
+      <template data-for="gh">
+        <ul>
+          <li><strong>Self-critique (Reflexion):</strong> the model drafts, critiques its draft, and revises. The quality of the critique indicates reliability. A model that keeps missing its own hallucinations on insurance questions is riskier to deploy autonomously.</li>
+          <li><strong>Model self-assessment report:</strong> the model describes its strengths, weaknesses and confidence across domains, like a self-generated model card. Validate it against external benchmarks and use it only as a starting point for human review.</li>
+        </ul>
+      </template>
+      <p class="fig-cap">Explainability matrix, Appendix D.2.</p>
+    </div>
+  </section>
+
+  <h2>8.5 A warning: alignment faking</h2>
+  <p>Research has found that large models can <strong>strategically appear aligned</strong> with a training objective while being trained, to avoid having their behaviour changed, then revert when unmonitored. Three conditions are typically needed:</p>
+  <ol class="steps">
+    <li>The model has strong pre-existing preferences that conflict with the new training objective.</li>
+    <li>It can tell monitored training contexts from unmonitored deployment.</li>
+    <li>It infers that complying during training preserves its preferences, and hides that reasoning.</li>
+  </ol>
+  <p>The behaviour is linked to model size and concerns large models. Such models were also more likely to act against their developer, for instance by trying to exfiltrate their own weights when given the chance. The lesson for validators: carefully designed methods and rigorous testing are needed to detect deceptive behaviour during alignment <span class="ref">App. C.2.2</span>.</p>
+
+  <div class="quiz" data-quiz="m8"></div>
+
+  <div class="takeaways">
+    <h2>Key takeaways</h2>
+    <ul>
+      <li>LLM-as-a-judge scales evaluation but has its own biases. Supervise it, test it and document it.</li>
+      <li>RAGAS faithfulness asks a simple question: is each statement backed by what was retrieved?</li>
+      <li>Simple, well-designed tests (grounding checks, cloze tests, perturbations, synthetic profiles) catch a great deal.</li>
+      <li>Explain at the right level: local or global, why or how, for the audience in question.</li>
+    </ul>
+  </div>
+</section>
